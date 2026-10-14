@@ -389,7 +389,7 @@
         </section>
       </section>
 
-      <!-- PASO 2: OBJETIVO -->
+     <!-- PASO 2: OBJETIVO -->
       <section class="screen screen-layout" data-screen="2">
         <aside class="side-intro">
           <div>
@@ -412,7 +412,8 @@
               <option value="1.4" selected>Moderado (3 a 4 entrenamientos/sem) (1.4)</option>
               <option value="1.5">Activo (4 a 5 entrenamientos intensos) (1.5)</option>
               <option value="1.6">Muy activo (entrenamiento diario o trabajo físico) (1.6)</option>
-              <option value="1.8">Atleta / Doble sesión diaria (1.8)</option>
+              <option value="1.8">Atleta (Doble sesión diaria) (1.8)</option>
+              <option value="1.9">Atleta de élite / Alto rendimiento (1.9)</option>
             </select>
           </div>
           <hr style="margin: 20px 0; border:0; border-top:1px solid #dcd5cc;" />
@@ -420,7 +421,7 @@
           <div class="goal-grid" aria-label="Ajustes energéticos rápidos">
             <button type="button" class="goal active" data-goal="-15"><b>−15% Pérdida</b><span>Déficit para definir grasa corporal.</span></button>
             <button type="button" class="goal" data-goal="0"><b>0% Mantener</b><span>Preservar peso y recomposición.</span></button>
-            <button type="button" class="goal" data-goal="10"><b>+10% Volumen</b><span>Superávit para ganancia muscular.</span></button>
+            <button type="button" class="goal" data-goal="15"><b>+15% Volumen</b><span>Superávit para ganancia muscular.</span></button>
           </div>
           <div class="field" style="margin-top:14px">
             <label for="adjustment">Ajuste personalizado (%)</label>
@@ -714,36 +715,54 @@
       }
     });
 
-    // 1. Cálculo inteligente y progresivo según la magnitud del ajuste
+    // 1. CÁLCULO INTELIGENTE CON 2 ALGORITMOS: Normopeso (IMC < 25) vs Sobrepeso (IMC >= 25)
     function getRecommendedMacros(bmi, adj, activityLevel) {
-      let protein = 30;
-      let fat = 25;
-      let carbs = 45;
+      let carbs, protein, fat;
+      const isOverweight = bmi >= 25;
 
-      if (adj < 0) {
-        const deficitMag = Math.abs(adj);
-        if (deficitMag >= 25) {
-          protein = 40; fat = 25; carbs = 35;
-        } else if (deficitMag >= 15) {
-          protein = 35; fat = 25; carbs = 40;
-        } else if (deficitMag >= 8) {
-          protein = 32; fat = 25; carbs = 43;
+      // ========================================================
+      // ALGORITMO 2: SOBREPESO U OBESIDAD (IMC >= 25)
+      // Prioridad: Mayor saciedad proteica y control glucémico
+      // ========================================================
+      if (isOverweight) {
+        if (adj < 0) {
+          // Déficit en sobrepeso: alta proteína y bajo carbohidrato
+          const deficitMag = Math.abs(adj);
+          if (deficitMag >= 20) {
+            protein = 40; carbs = 30; fat = 30; // Déficit pronunciado
+          } else {
+            protein = 35; carbs = 35; fat = 30; // Déficit moderado/leve
+          }
+        } else if (adj > 0) {
+          // Superávit en sobrepeso: controlado para no acumular grasa
+          protein = 30; carbs = 45; fat = 25;
         } else {
-          protein = 30; fat = 25; carbs = 45;
+          // Mantenimiento / Recomposición en sobrepeso
+          protein = 35; carbs = 35; fat = 30;
         }
-      } else if (adj > 0) {
-        if (adj >= 15) {
-          protein = 25; fat = 20; carbs = 55;
+      } 
+      // ========================================================
+      // ALGORITMO 1: NORMOPESO (IMC < 25)
+      // Prioridad: Rendimiento atlético y glucógeno muscular
+      // ========================================================
+      else {
+        if (adj < 0) {
+          // Pérdida / Definición en normopeso
+          const deficitMag = Math.abs(adj);
+          if (deficitMag >= 20) {
+            protein = 35; carbs = 40; fat = 25;
+          } else {
+            protein = 30; carbs = 45; fat = 25;
+          }
+        } else if (adj > 0) {
+          // Aumento (+15%) en normopeso: alto aporte de carbohidratos
+          protein = 25;
+          carbs = activityLevel >= 1.6 ? 55 : 50;
+          fat = activityLevel >= 1.6 ? 20 : 25;
         } else {
-          protein = 25; fat = 25; carbs = 50;
+          // Mantenimiento exacto en normopeso
+          protein = 25; carbs = 50; fat = 25;
         }
-      } else {
-        protein = 30; fat = 25; carbs = 45;
-      }
-
-      if (bmi >= 30 && adj < 0) {
-        protein = Math.min(45, protein + 5);
-        carbs = Math.max(25, carbs - 5);
       }
 
       return { carbs, protein, fat };
@@ -759,9 +778,10 @@
 
       const fatMass = res.data.weight * res.data.bodyFat / 100;
       const leanMass = res.data.weight - fatMass;
-      // Fórmula de Müller et al. (2004)
+
+      // Fórmula de Müller et al. (2004) + Factor Térmico 1.1 (coincide con tu Excel)
       const basal = 13.587 * leanMass + 9.613 * fatMass + (res.data.sex === 'male' ? 198 : 0) - 3.351 * res.data.age + 674;
-      const maintenance = basal * act;
+      const maintenance = basal * act * 1.1;
       const targetKcal = Math.round(maintenance * (1 + adj / 100));
 
       const split = getMacroSplit();
@@ -795,7 +815,7 @@
       updateStep2LiveFeedback();
     }
 
-    // Actualización única de macros al modificar ajuste (%) o actividad
+    // Actualización de macros al modificar ajuste (%) o actividad
     function updateMacrosFromAdjustment() {
       const res = readProfile();
       if (!res.error) {
