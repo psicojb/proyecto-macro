@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
     const httpMethod = 'GET';
     const baseUrl = 'https://platform.fatsecret.com/rest/server.api';
 
-    // Pedimos 40 resultados para que alimentos como "crema de arroz" nunca se queden por fuera
+    // Solicitamos 40 resultados para que no se oculte la crema de arroz
     const params = {
       format: 'json',
       language: 'es',
@@ -55,26 +55,34 @@ module.exports = async (req, res) => {
     const rawFoods = searchResponse.foods?.food;
     const allFoods = Array.isArray(rawFoods) ? rawFoods : (rawFoods ? [rawFoods] : []);
 
-    // FILTRO RIGUROSO ANTIRECETAS (Descarta platos compuestos pero conserva ingredientes puros)
-    const recipePattern = /\b(style|estilo|receta|recipe|combo|menú|menu|guisad[oa]|hornead[oa]|frit[oa]\s+con|al\s+horno|a\s+la|al\s+ajillo|en\s+salsa|caser[oa]|homemade|plato|ensalada\s+de|sopa\s+de|caldo\s+de|tacos?\s+de|burritos?|fajitas?|guarnici[oó]n|con\s+queso|con\s+papas|con\s+arroz)\b/i;
-    const foodList = allFoods.filter(item => !recipePattern.test(item.food_name || ''));
-
+    // 1. FILTRO DE PALABRAS: Eliminar recetas, combos y preparaciones de restaurante
+    const recipeWords = /\b(style|estilo|receta|recipe|combo|familiar|para compartir|olla|plato|menu|menú|guisad|hornead|caser|al horno|en salsa|con queso|con pollo)\b/i;
+    
     const parseMacro = (text, regex) => {
       const match = text.match(regex);
       if (!match) return 0;
       return parseFloat(match[1].replace(',', '.')) || 0;
     };
 
-    const results = foodList.map(item => {
+    const results = [];
+
+    for (const item of allFoods) {
+      const name = item.food_name || '';
+      if (recipeWords.test(name)) continue; // Descarta recetas por nombre
+
       const desc = item.food_description || '';
       const kcal = Math.round(parseMacro(desc, /(?:Calories|Calorías):\s*([0-9.,]+)/i));
+
+      // 2. FILTRO DE CALORÍAS: Si tiene más de 900 kcal es una olla/receta familiar gigante (se descarta)
+      if (kcal > 900 || (kcal === 0 && !name.toLowerCase().includes('agua'))) continue;
+
       const fat = parseFloat(parseMacro(desc, /(?:Fat|Grasa):\s*([0-9.,]+)g/i).toFixed(1));
       const carbs = parseFloat(parseMacro(desc, /(?:Carbs|Carb|Carbohidratos|Carbh):\s*([0-9.,]+)g/i).toFixed(1));
       const protein = parseFloat(parseMacro(desc, /(?:Protein|Proteína|Proteina|Prot):\s*([0-9.,]+)g/i).toFixed(1));
 
-      return {
+      results.push({
         code: `fs_${item.food_id}`,
-        name: item.food_name,
+        name: name,
         brand: item.brand_name || 'Genérico',
         kcal,
         protein,
@@ -82,8 +90,8 @@ module.exports = async (req, res) => {
         fat,
         fiber: 0,
         baseGrams: 100
-      };
-    });
+      });
+    }
 
     return res.status(200).json({ results });
   } catch (err) {
