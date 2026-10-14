@@ -116,8 +116,7 @@
     .btn {
       display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 8px;
       padding: 0 18px; border: 1px solid var(--black); background: var(--black); color: white;
-      font-size: 12px; font-weight: 750; letter-spacing: .02em; border-radius: 4px; transition: .15s ease;
-    }
+      font-size: 12px; font-weight: 750; letter-spacing: .02em; border-radius: 4px; transition: .15s ease; }
     .btn:hover { background: var(--red); border-color: var(--red); }
     .btn:active { transform: scale(.98); }
     .btn.secondary { background: transparent; color: var(--black); border-color: var(--black); }
@@ -543,7 +542,7 @@
           <p id="searchCount" style="font-size:11px;color:#a9a4a6;margin:4px 0 0;">Escribe para ver resultados.</p>
           
           <!-- SELECTOR LIMPIO GR / ML -->
-          <label for="foodGrams" id="foodAmountLabel">Cantidad consumida (<span id="unitTextIndicator">Gr</span>)</label>
+          <label for="foodGrams" id="foodAmountLabel">Cantidad consumida (Gr)</label>
           <div class="unit">
             <input id="foodGrams" type="number" min="1" value="100" />
             <b id="foodUnitBadge" style="cursor:pointer; user-select:none; background:#dcd5cc; color:#111; min-width:54px; text-align:center; font-weight:800;" title="Toca para alternar entre Gr y Ml">Gr</b>
@@ -1486,16 +1485,7 @@ Sé claro, directo y motivador. Responde en español.
     });
 
     
-            
-        // Actualiza la etiqueta directamente sin depender de unitTextIndicator
-        if ($('foodAmountLabel')) {
-          $('foodAmountLabel').textContent = `Cantidad consumida (${currentSelectedUnit})`;
-        }
-        
-        showToast(`Medida cambiada a: ${currentSelectedUnit}`);
-      });
-    }
-    
+         
     // Añadir alimento con la unidad seleccionada
     $('addFood').addEventListener('click', () => {
       const amount = numVal('foodGrams');
