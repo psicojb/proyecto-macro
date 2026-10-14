@@ -23,11 +23,10 @@ module.exports = async (req, res) => {
     const httpMethod = 'GET';
     const baseUrl = 'https://platform.fatsecret.com/rest/server.api';
 
-    // Solicitamos 40 resultados para que no se oculte la crema de arroz
     const params = {
       format: 'json',
       language: 'es',
-      max_results: '40',
+      max_results: '50',
       method: 'foods.search',
       oauth_consumer_key: consumerKey.trim(),
       oauth_nonce: crypto.randomBytes(16).toString('hex'),
@@ -55,9 +54,17 @@ module.exports = async (req, res) => {
     const rawFoods = searchResponse.foods?.food;
     const allFoods = Array.isArray(rawFoods) ? rawFoods : (rawFoods ? [rawFoods] : []);
 
-    // 1. FILTRO DE PALABRAS: Eliminar recetas, combos y preparaciones de restaurante
-    const recipeWords = /\b(style|estilo|receta|recipe|combo|familiar|para compartir|olla|plato|menu|menú|guisad|hornead|caser|al horno|en salsa|con queso|con pollo)\b/i;
+    // Palabras irrelevantes que no deben usarse solas como filtro (de, la, con...)
+    const cleanQueryWords = query.toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .split(/\s+/)
+      .filter(w => w.length > 2 && !['del', 'las', 'los', 'con', 'para', 'por'].includes(w));
+
+    const recipeWords = /\b(style|estilo|receta|recipe|combo|familiar|para compartir|olla|plato|menu|menú|guisad|hornead|caser|al horno|en salsa|soup|stew)\b/i;
     
+    // Detección de títulos en inglés para descartarlos
+    const englishIndicators = /\b(soup|stew|and|with|chicken|beef|pork|fish|peas?|vegetable|roasted|fried|beans)\b/i;
+
     const parseMacro = (text, regex) => {
       const match = text.match(regex);
       if (!match) return 0;
@@ -67,14 +74,29 @@ module.exports = async (req, res) => {
     const results = [];
 
     for (const item of allFoods) {
-      const name = item.food_name || '';
-      if (recipeWords.test(name)) continue; // Descarta recetas por nombre
+      const rawName = item.food_name || '';
+      const normName = rawName.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+      // 1. Descartar si el nombre principal está en inglés
+      if (englishIndicators.test(rawName) && !rawName.toLowerCase().includes('arroz')) {
+        continue;
+      }
+
+      // 2. Descartar recetas y platos preparados
+      if (recipeWords.test(rawName)) continue;
+
+      // 3. COINCIDENCIA REAL: El alimento debe contener las palabras clave buscadas
+      // (Si buscas "crema de arroz", debe tener "crema" y "arroz", no hierbas ni sopas)
+      if (cleanQueryWords.length > 1) {
+        const matchesAll = cleanQueryWords.every(word => normName.includes(word));
+        if (!matchesAll) continue;
+      }
 
       const desc = item.food_description || '';
       const kcal = Math.round(parseMacro(desc, /(?:Calories|Calorías):\s*([0-9.,]+)/i));
 
-      // 2. FILTRO DE CALORÍAS: Si tiene más de 900 kcal es una olla/receta familiar gigante (se descarta)
-      if (kcal > 900 || (kcal === 0 && !name.toLowerCase().includes('agua'))) continue;
+      // 4. Descartar aberraciones calóricas de ollas gigantes (> 900 kcal)
+      if (kcal > 900 || (kcal === 0 && !normName.includes('agua'))) continue;
 
       const fat = parseFloat(parseMacro(desc, /(?:Fat|Grasa):\s*([0-9.,]+)g/i).toFixed(1));
       const carbs = parseFloat(parseMacro(desc, /(?:Carbs|Carb|Carbohidratos|Carbh):\s*([0-9.,]+)g/i).toFixed(1));
@@ -82,7 +104,7 @@ module.exports = async (req, res) => {
 
       results.push({
         code: `fs_${item.food_id}`,
-        name: name,
+        name: rawName,
         brand: item.brand_name || 'Genérico',
         kcal,
         protein,
