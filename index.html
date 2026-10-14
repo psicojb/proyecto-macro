@@ -542,8 +542,11 @@
           <p id="catalogStatus" style="font-size:11px;color:#f3aaa5;margin:8px 0 0;">Cargando catálogo...</p>
           <p id="searchCount" style="font-size:11px;color:#a9a4a6;margin:4px 0 0;">Escribe para ver resultados.</p>
           
-          <label for="foodGrams" id="foodAmountLabel">Cantidad consumida (g)</label>
-          <div class="unit"><input id="foodGrams" type="number" min="1" value="100" /><b id="foodUnitBadge">g</b></div>
+         <label for="foodGrams" id="foodAmountLabel">Cantidad consumida (<span id="unitTextIndicator">g</span>)</label>
+          <div class="unit">
+            <input id="foodGrams" type="number" min="1" value="100" />
+            <b id="foodUnitBadge" style="cursor:pointer; user-select:none; background:#e2dcd4;" title="Toca aquí para alternar entre gramos (g) y mililitros (ml)">g ⇄ ml</b>
+          </div>
           <button type="button" id="addFood" class="btn add-food" disabled>+ Añadir al registro</button>
           <p style="margin-top:22px;font-size:11px;color:#8f8b91;line-height:1.5;"><b>Medidas:</b> Los alimentos sólidos se calculan en gramos (g) y los líquidos (leche, jugos, aceites) en mililitros (ml) proporcionalmente.</p>
         </section>
@@ -1136,17 +1139,16 @@
       $('proteinKg').innerHTML = `${fmt(plan.protein / plan.weight, 2)} <span class="unit-tag">g/kg</span>`;
       $('fatKg').innerHTML = `${fmt(plan.fat / plan.weight, 2)} <span class="unit-tag">g/kg</span>`;
       
-      $('methodText').textContent = `Masa magra: ${fmt(plan.leanMass, 1)} kg | Masa grasa: ${fmt(plan.fatMass, 1)} kg. Distribución fijada en ${fmt(plan.macroSplit.carbs, 1)}% Carbos, ${fmt(plan.macroSplit.protein, 1)}% Proteínas y ${fmt(plan.macroSplit.fat, 1)}% Grasas.`;
+      // CÓDIGO NUEVO (SUSTITUTO):
+$('methodText').innerHTML = `<b>Fórmula de Müller et al. (2004):</b> Basada en Masa Magra (${fmt(plan.leanMass, 1)} kg) y Masa Grasa (${fmt(plan.fatMass, 1)} kg). Gasto de mantenimiento: ${fmt(plan.maintenance)} kcal. Ajuste calórico: ${plan.adjustment}%.`;
     }
 
     // CORRECCIÓN PUNTO 3: Escalado exacto respetando si es ml o g
-    function scaled(id, amount) {
+    function scaled(id, amount, customUnit = null) {
       const food = foodByCode[id];
       if (!food) return null;
       
-      const unit = isLiquidFood(food.name) ? 'ml' : 'g';
       const factor = amount / (food.baseGrams || 100);
-      
       const protein = Number((food.protein * factor).toFixed(1));
       const carbs = Number((food.carbs * factor).toFixed(1));
       const fat = Number((food.fat * factor).toFixed(1));
@@ -1161,7 +1163,7 @@
       return {
         id,
         amount,
-        unit,
+        unit: customUnit || 'g',
         name: food.name,
         kcal,
         protein,
@@ -1486,6 +1488,17 @@ document.querySelectorAll('[data-macro-input]').forEach(inp => {
       if (btn) selectFood(btn.dataset.selectFood);
     });
 
+// NUEVO: Control del botón interactivo g / ml
+    let currentSelectedUnit = 'g';
+
+    $('foodUnitBadge').addEventListener('click', () => {
+      currentSelectedUnit = (currentSelectedUnit === 'g') ? 'ml' : 'g';
+      $('foodUnitBadge').textContent = `${currentSelectedUnit} ⇄ ${currentSelectedUnit === 'g' ? 'ml' : 'g'}`;
+      $('unitTextIndicator').textContent = currentSelectedUnit;
+      $('foodAmountLabel').textContent = `Cantidad consumida (${currentSelectedUnit})`;
+      showToast(`Unidad cambiada a: ${currentSelectedUnit.toUpperCase()}`);
+    });
+    
     $('addFood').addEventListener('click', () => {
       const amount = numVal('foodGrams');
       const food = foodByCode[selectedFoodCode];
@@ -1493,17 +1506,15 @@ document.querySelectorAll('[data-macro-input]').forEach(inp => {
         showToast('Selecciona un alimento e indica la cantidad.');
         return;
       }
-      entries.push({ id: food.code, amount });
+      // Guarda el alimento respetando si elegiste 'g' o 'ml' en el botón gris
+      entries.push({ id: food.code, amount, unit: currentSelectedUnit });
       $('foodSearch').value = '';
       selectedFoodCode = null;
       $('addFood').disabled = true;
       $('searchCount').textContent = 'Alimento añadido al registro.';
-      $('foodUnitBadge').textContent = 'g';
-      $('foodAmountLabel').textContent = 'Cantidad consumida (g)';
-      $('foodGrams').value = '100';
       renderFoods();
       renderMeals();
-      showToast('Alimento añadido.');
+      showToast(`Alimento añadido (${amount} ${currentSelectedUnit}).`);
     });
 
     $('foodList').addEventListener('click', (e) => {
