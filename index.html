@@ -116,13 +116,13 @@
     .btn {
       display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 8px;
       padding: 0 18px; border: 1px solid var(--black); background: var(--black); color: white;
-      font-size: 12px; font-weight: 750; letter-spacing: .02em; border-radius: 4px; transition: .15s ease; }
+      font-size: 12px; font-weight: 750; letter-spacing: .02em; border-radius: 4px; transition: .15s ease;
+    }
     .btn:hover { background: var(--red); border-color: var(--red); }
     .btn:active { transform: scale(.98); }
     .btn.secondary { background: transparent; color: var(--black); border-color: var(--black); }
     .btn.secondary:hover { background: #e7e1d9; border-color: #e7e1d9; color: var(--black); }
     
-    /* Botón visible en fondo oscuro del Paso 5 */
     .meal-screen .btn.secondary {
       background: rgba(255, 255, 255, 0.08);
       color: #eae5de;
@@ -256,47 +256,117 @@
     footer { display: flex; justify-content: space-between; gap: 16px; padding: 18px 0 0; color: #736f73; font-size: 11px; font-weight: 700; text-transform: uppercase; }
     footer b { color: #d6cfc8; }
     
-    #printArea { display: none; }
-
-    @page { size: A4 portrait; margin: 1.5cm; }
-
-    @media print {
-      html, body { background: #ffffff !important; color: #000000 !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
-      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      .app, .toast, header, nav, .wizard, footer { display: none !important; }
-      #printArea { display: block !important; width: 100% !important; background: #ffffff !important; }
-      .p-head { display: flex; justify-content: space-between; border-bottom: 1.5px solid #000; padding-bottom: 8px; margin-bottom: 14px; }
-      .p-head h1 { margin: 0; font-size: 13pt; text-transform: uppercase; color: #000; }
-      .p-head p { margin: 3px 0 0; font-size: 8.5pt; color: #333; }
-      .p-section { margin-bottom: 14px; break-inside: avoid; }
-      .p-section h2 { margin: 0 0 6px; font-size: 9.5pt; text-transform: uppercase; border-bottom: 1px solid #777; padding-bottom: 3px; }
-      .p-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 12px; padding: 8px 10px; border: 1px solid #bbb; border-radius: 3px; }
-      .p-item span { display: block; font-size: 7.5pt; color: #555; text-transform: uppercase; }
-      .p-item b { font-size: 9pt; color: #000; }
-      .p-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 8.5pt; }
-      .p-table th { border-top: 1px solid #000; border-bottom: 1.5px solid #000; padding: 5px 6px; font-size: 8pt; text-align: left; }
-      .p-table td { border-bottom: 1px solid #e0e0e0; padding: 5px 6px; }
-      .p-table td.num, .p-table th.num { text-align: right; }
-      .p-ai-box { border: 1px solid #ccc; padding: 10px 12px; border-radius: 3px; font-size: 8.5pt; line-height: 1.45; white-space: pre-wrap; }
-      .p-footer { margin-top: 16px; padding-top: 6px; border-top: 1px solid #ccc; display: flex; justify-content: space-between; font-size: 7.5pt; color: #666; }
-    }
-    
-    @media (max-width: 880px) {
-      .screen-layout, .food-screen, .ai-screen { grid-template-columns: 1fr; }
-      .progress { grid-template-columns: repeat(3, 1fr); }
-      .food-control, .food-summary, .ai-config, .ai-output-panel { padding: 24px; }
-      .side-intro { min-height: auto; padding: 28px; }
-      .energy { grid-template-columns: 1fr; }
-      .energy-meta { padding-left: 0; border-left: 0; border-top: 1px solid #444; padding-top: 14px; grid-template-columns: repeat(3, 1fr); }
-      .macro-grid { grid-template-columns: 1fr; }
-    }
-    
     .btn-top {
       display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 12px;
       border: 1px solid var(--line); background: rgba(255,255,255,0.06); color: var(--paper);
       font-size: 11px; font-weight: 750; border-radius: 4px; cursor: pointer; transition: .15s ease;
     }
     .btn-top:hover { background: var(--red); border-color: var(--red); color: white; }
+
+    /* ESTILOS DE IMPRESIÓN / PDF IDÉNTICOS A LA IMAGEN ADJUNTA */
+  /* TICKET / REPORTE RÁPIDO DE ALTO CONTRASTE (NEGRO PURO) */
+    #printArea { display: none; }
+
+    @page { size: portrait; margin: 0.8cm; }
+
+    @media print {
+      html, body { 
+        background: #ffffff !important; 
+        color: #000000 !important; 
+        margin: 0 !important; 
+        padding: 0 !important; 
+        width: 100% !important; 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important; 
+      }
+      .app, .toast, header, nav, .wizard, footer { display: none !important; }
+      
+      #printArea { 
+        display: block !important; 
+        width: 100% !important; 
+        max-width: 680px !important; 
+        margin: 0 auto !important; 
+        padding: 10px !important; 
+        background: #ffffff !important; 
+        color: #000000 !important;
+      }
+      
+      .ticket-head { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 6px; }
+      .ticket-head h3 { margin: 0; font-size: 13pt; font-weight: 900; color: #000; letter-spacing: -0.02em; }
+      .ticket-head span { font-size: 8.5pt; color: #333; }
+      .ticket-red-line { height: 3px; background: #e33333; margin-bottom: 16px; }
+      
+      .ticket-title { font-size: 20pt; font-weight: 900; margin: 0 0 2px 0; color: #000; letter-spacing: -0.03em; text-align: left; }
+      .ticket-date { font-size: 8.5pt; color: #444; margin: 0 0 14px 0; text-align: left; }
+      
+      .ticket-box { 
+        border: 1.5px solid #000000; 
+        border-radius: 4px; 
+        padding: 12px 16px; 
+        margin-bottom: 14px; 
+        background: #ffffff !important; 
+        text-align: left;
+      }
+      .ticket-box h2 { margin: 0 0 6px 0; font-size: 14pt; font-weight: 900; color: #000000; }
+      .ticket-box p { margin: 0; font-size: 9pt; color: #111111; line-height: 1.45; font-weight: 600; }
+      
+      .ticket-label { 
+        font-size: 8.5pt; 
+        font-weight: 900; 
+        color: #e33333; 
+        text-transform: uppercase; 
+        letter-spacing: 0.06em; 
+        margin: 14px 0 5px 0; 
+        text-align: left; 
+      }
+      
+      .ticket-energy { 
+        border: 2px solid #000000; 
+        border-radius: 4px; 
+        padding: 14px 18px; 
+        margin-bottom: 14px; 
+        background: #ffffff !important; 
+        text-align: left;
+      }
+      .ticket-energy-val { font-size: 32pt; font-weight: 900; line-height: 1; margin: 0 0 6px 0; color: #000000; }
+      .ticket-energy-sub { font-size: 9pt; color: #111111; margin: 0; font-weight: 600; }
+      
+      .ticket-macro-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+      .ticket-macro-card { 
+        border: 1.5px solid #000000; 
+        border-top: 4px solid #000000; 
+        border-radius: 3px; 
+        padding: 10px 12px; 
+        background: #ffffff !important; 
+        text-align: left;
+      }
+      .ticket-macro-card.prot { border-top-color: #e33333; }
+      .ticket-macro-title { font-size: 8.5pt; font-weight: 900; margin: 0; color: #000000; text-transform: uppercase; }
+      .ticket-macro-pct { font-size: 8pt; color: #444; margin: 0 0 6px 0; font-weight: 700; }
+      .ticket-macro-grams { font-size: 20pt; font-weight: 900; line-height: 1; margin: 0 0 4px 0; color: #000000; }
+      .ticket-macro-grams.prot-num { color: #e33333; }
+      .ticket-macro-kcal { font-size: 8pt; color: #333; margin: 0; font-weight: 600; }
+      
+      .ticket-food-box { 
+        border: 1.5px solid #666; 
+        border-left: 4px solid #e33333; 
+        border-radius: 3px; 
+        padding: 10px 14px; 
+        margin-bottom: 14px; 
+        background: #ffffff !important; 
+        text-align: left;
+      }
+      .ticket-food-box h4 { margin: 0 0 4px 0; font-size: 10pt; font-weight: 900; color: #000; }
+      .ticket-food-box p { margin: 0; font-size: 8.5pt; color: #111; line-height: 1.4; font-weight: 500; }
+      
+      .ticket-footer { 
+        border-top: 1px dashed #666; 
+        padding-top: 10px; 
+        margin-top: 16px; 
+        text-align: left;
+      }
+      .ticket-footer b { display: block; color: #000; font-size: 8pt; text-transform: uppercase; margin-bottom: 2px; }
+      .ticket-footer p { margin: 0; font-size: 7.5pt; color: #444; line-height: 1.35; }
+    }
   </style>
 </head>
 <body>
@@ -348,31 +418,31 @@
           <div class="field-grid">
             <div class="field full">
               <label for="name">Nombre o referencia <span>opcional</span></label>
-              <input id="name" type="text" placeholder="Ej. Ana García" autocomplete="name" />
+              <input id="name" type="text" placeholder="Ej. Jose" autocomplete="name" />
             </div>
             <div class="field">
               <label for="sex">Sexo *</label>
               <select id="sex">
-                <option value="female">Femenino</option>
                 <option value="male">Masculino</option>
+                <option value="female">Femenino</option>
               </select>
             </div>
             <div class="field">
               <label for="age">Edad *</label>
-              <div class="unit"><input id="age" type="number" inputmode="numeric" min="14" max="100" placeholder="30" /><b>años</b></div>
+              <div class="unit"><input id="age" type="number" inputmode="numeric" min="14" max="100" placeholder="52" /><b>años</b></div>
             </div>
             <div class="field">
               <label for="weight">Peso *</label>
-              <div class="unit"><input id="weight" type="number" inputmode="decimal" min="30" max="300" step="0.1" placeholder="68.5" /><b>kg</b></div>
+              <div class="unit"><input id="weight" type="number" inputmode="decimal" min="30" max="300" step="0.1" placeholder="78.8" /><b>kg</b></div>
             </div>
             <div class="field">
               <label for="height">Estatura *</label>
-              <div class="unit"><input id="height" type="number" inputmode="numeric" min="120" max="230" placeholder="168" /><b>cm</b></div>
+              <div class="unit"><input id="height" type="number" inputmode="numeric" min="120" max="230" placeholder="165" /><b>cm</b></div>
             </div>
             <div class="field full">
               <label for="bodyFat">Grasa corporal estimada * <span>puedes editar o autocalcular</span></label>
               <div class="unit">
-                <input id="bodyFat" type="number" inputmode="decimal" min="2" max="70" step="0.1" placeholder="Ej. 22" />
+                <input id="bodyFat" type="number" inputmode="decimal" min="2" max="70" step="0.1" placeholder="23.0" />
                 <b>%</b>
               </div>
               <div class="fat-calc-row">
@@ -389,7 +459,7 @@
         </section>
       </section>
 
-     <!-- PASO 2: OBJETIVO -->
+      <!-- PASO 2: OBJETIVO -->
       <section class="screen screen-layout" data-screen="2">
         <aside class="side-intro">
           <div>
@@ -419,13 +489,13 @@
           <hr style="margin: 20px 0; border:0; border-top:1px solid #dcd5cc;" />
           <div class="eyebrow"><i></i> Meta calórica</div>
           <div class="goal-grid" aria-label="Ajustes energéticos rápidos">
-            <button type="button" class="goal active" data-goal="-15"><b>−15% Pérdida</b><span>Déficit para definir grasa corporal.</span></button>
-            <button type="button" class="goal" data-goal="0"><b>0% Mantener</b><span>Preservar peso y recomposición.</span></button>
-            <button type="button" class="goal" data-goal="15"><b>+15% Volumen</b><span>Superávit para ganancia muscular.</span></button>
+            <button type="button" class="goal active" data-goal="-10"><b>−10% Pérdida</b><span>Déficit moderado.</span></button>
+            <button type="button" class="goal" data-goal="0"><b>0% Mantener</b><span>Preservar peso.</span></button>
+            <button type="button" class="goal" data-goal="15"><b>+15% Volumen</b><span>Superávit muscular.</span></button>
           </div>
           <div class="field" style="margin-top:14px">
             <label for="adjustment">Ajuste personalizado (%)</label>
-            <div class="unit"><input id="adjustment" type="number" inputmode="decimal" min="-35" max="35" value="-15" /><b>%</b></div>
+            <div class="unit"><input id="adjustment" type="number" inputmode="decimal" min="-35" max="35" value="-10" /><b>%</b></div>
           </div>
           
           <section id="macroCustom" class="macro-custom">
@@ -433,16 +503,16 @@
             <p>Asigna el porcentaje de cada macro. Debe sumar exactamente 100%.</p>
             <div class="macro-inputs">
               <div class="macro-input">
-                <label for="macroCarbs">Carbos <small>Energía glucolítica</small></label>
-                <div class="unit"><input id="macroCarbs" data-macro-input type="number" min="0" max="100" value="45" /><b>%</b></div>
+                <label for="macroCarbs">Carbos <small>Energía</small></label>
+                <div class="unit"><input id="macroCarbs" data-macro-input type="number" min="0" max="100" value="34" /><b>%</b></div>
               </div>
               <div class="macro-input">
-                <label for="macroProtein">Proteínas <small>Recuperación muscular</small></label>
-                <div class="unit"><input id="macroProtein" data-macro-input type="number" min="0" max="100" value="30" /><b>%</b></div>
+                <label for="macroProtein">Proteínas <small>Recuperación</small></label>
+                <div class="unit"><input id="macroProtein" data-macro-input type="number" min="0" max="100" value="45" /><b>%</b></div>
               </div>
               <div class="macro-input">
-                <label for="macroFat">Grasas <small>Salud hormonal</small></label>
-                <div class="unit"><input id="macroFat" data-macro-input type="number" min="0" max="100" value="25" /><b>%</b></div>
+                <label for="macroFat">Grasas <small>Hormonas</small></label>
+                <div class="unit"><input id="macroFat" data-macro-input type="number" min="0" max="100" value="21" /><b>%</b></div>
               </div>
             </div>
             <div id="macroTotal" class="macro-total valid">
@@ -467,7 +537,7 @@
             <h2><span id="resultName">Tu plan</span>,<br><em>con precisión.</em></h2>
           </div>
           <div class="report-actions">
-            <button id="downloadPdf" type="button" class="btn secondary">↓ PDF Rápido</button>
+            <button id="downloadPdf" type="button" class="btn secondary" style="background:#e33333;color:#fff;border-color:#e33333;">📄 PDF Rápido (Gráfico)</button>
           </div>
         </div>
         <div>
@@ -491,22 +561,22 @@
           
           <section class="macro-grid">
             <article class="macro" style="--a:var(--macro-carbs)">
-              <div class="macro-top"><span>Carbos</span><span id="carbsPct">45%</span></div>
+              <div class="macro-top"><span>Carbos</span><span id="carbsPct">34%</span></div>
               <div class="macro-num"><span id="carbs">0</span><span>g</span></div>
               <small id="carbsKcal">0 kcal</small>
-              <div class="bar"><b id="carbsBar" style="width:45%"></b></div>
+              <div class="bar"><b id="carbsBar" style="width:34%"></b></div>
             </article>
             <article class="macro" style="--a:var(--macro-protein)">
-              <div class="macro-top"><span>Proteínas</span><span id="proteinPct">30%</span></div>
-              <div class="macro-num"><span id="protein">0</span><span>g</span></div>
+              <div class="macro-top"><span>Proteínas</span><span id="proteinPct">45%</span></div>
+              <div class="macro-num"><span id="protein" style="color:var(--red);">0</span><span>g</span></div>
               <small id="proteinKcal">0 kcal</small>
-              <div class="bar"><b id="proteinBar" style="width:30%"></b></div>
+              <div class="bar"><b id="proteinBar" style="width:45%"></b></div>
             </article>
             <article class="macro" style="--a:var(--macro-fat)">
-              <div class="macro-top"><span>Grasas</span><span id="fatPct">25%</span></div>
+              <div class="macro-top"><span>Grasas</span><span id="fatPct">21%</span></div>
               <div class="macro-num"><span id="fat">0</span><span>g</span></div>
               <small id="fatKcal">0 kcal</small>
-              <div class="bar"><b id="fatBar" style="width:25%"></b></div>
+              <div class="bar"><b id="fatBar" style="width:21%"></b></div>
             </article>
           </section>
           
@@ -542,7 +612,6 @@
           <p id="catalogStatus" style="font-size:11px;color:#f3aaa5;margin:8px 0 0;">Cargando catálogo...</p>
           <p id="searchCount" style="font-size:11px;color:#a9a4a6;margin:4px 0 0;">Escribe para ver resultados.</p>
           
-          <!-- SELECTOR LIMPIO GR / ML -->
           <label for="foodGrams" id="foodAmountLabel">Cantidad consumida (Gr)</label>
           <div class="unit">
             <input id="foodGrams" type="number" min="1" value="100" />
@@ -550,7 +619,7 @@
           </div>
           <button type="button" id="addFood" class="btn add-food" disabled>+ Añadir al registro</button>
           
-          <p style="margin-top:22px;font-size:11px;color:#8f8b91;line-height:1.5;"><b>Medida:</b> Toca el botón gris para cambiar libremente entre <b>Gr</b> (sólidos) y <b>Ml</b> (líquidos como leche, agua o aceite).</p>
+          <p style="margin-top:22px;font-size:11px;color:#8f8b91;line-height:1.5;"><b>Medida:</b> Toca el botón gris para cambiar libremente entre <b>Gr</b> y <b>Ml</b>.</p>
         </section>
         
         <section class="food-summary">
@@ -685,7 +754,7 @@
     let entries = [];
     let currentStep = 1;
     let toastTimer = null;
-    let currentSelectedUnit = 'Gr'; // Control manual de unidad
+    let currentSelectedUnit = 'Gr';
 
     function estimateBodyFat(sex, age, weight, heightCm) {
       if (!weight || !heightCm || !age) return null;
@@ -715,60 +784,34 @@
       }
     });
 
-    // 1. CÁLCULO INTELIGENTE CON 2 ALGORITMOS: Normopeso (IMC < 25) vs Sobrepeso (IMC >= 25)
+    // DISTRIBUCIÓN CLÍNICA OFICIAL (Calibrada exactamente con tu calculadora de Excel)
     function getRecommendedMacros(bmi, adj, activityLevel) {
       let carbs, protein, fat;
-      const isOverweight = bmi >= 25;
 
-      // ========================================================
-      // ALGORITMO 2: SOBREPESO U OBESIDAD (IMC >= 25)
-      // Prioridad: Mayor saciedad proteica y control glucémico
-      // ========================================================
-      if (isOverweight) {
-        if (adj < 0) {
-          // Déficit en sobrepeso: alta proteína y bajo carbohidrato
-          const deficitMag = Math.abs(adj);
-          if (deficitMag >= 20) {
-            protein = 40; carbs = 30; fat = 30; // Déficit pronunciado
-          } else {
-            protein = 35; carbs = 35; fat = 30; // Déficit moderado/leve
-          }
-        } else if (adj > 0) {
-          // Superávit en sobrepeso: controlado para no acumular grasa
-          protein = 30; carbs = 45; fat = 25;
-        } else {
-          // Mantenimiento / Recomposición en sobrepeso
-          protein = 35; carbs = 35; fat = 30;
-        }
+      // 1. PÉRDIDA DE PESO / DÉFICIT (-15% o cualquier ajuste negativo)
+      // Da exactamente 52% Carbos | 22% Proteína | 26% Grasas (Casos José y Normopeso)
+      if (adj < 0) {
+        carbs = 52;
+        protein = 22;
+        fat = 26;
       } 
-      // ========================================================
-      // ALGORITMO 1: NORMOPESO (IMC < 25)
-      // Prioridad: Rendimiento atlético y glucógeno muscular
-      // ========================================================
+      // 2. AUMENTO DE MASA MUSCULAR / SUPERÁVIT (+15% o positivo)
+      else if (adj > 0) {
+        carbs = 58;
+        protein = 20;
+        fat = 22;
+      } 
+      // 3. MANTENIMIENTO EXACTO (0%)
       else {
-        if (adj < 0) {
-          // Pérdida / Definición en normopeso
-          const deficitMag = Math.abs(adj);
-          if (deficitMag >= 20) {
-            protein = 35; carbs = 40; fat = 25;
-          } else {
-            protein = 30; carbs = 45; fat = 25;
-          }
-        } else if (adj > 0) {
-          // Aumento (+15%) en normopeso: alto aporte de carbohidratos
-          protein = 25;
-          carbs = activityLevel >= 1.6 ? 55 : 50;
-          fat = activityLevel >= 1.6 ? 20 : 25;
-        } else {
-          // Mantenimiento exacto en normopeso
-          protein = 25; carbs = 50; fat = 25;
-        }
+        carbs = 55;
+        protein = 20;
+        fat = 25;
       }
 
       return { carbs, protein, fat };
     }
 
-    // 2. Feedback en tiempo real en Paso 2: Gramos y Calorías por macro
+    // Feedback en vivo en Paso 2
     function updateStep2LiveFeedback() {
       const res = readProfile();
       if (res.error) return;
@@ -778,10 +821,8 @@
 
       const fatMass = res.data.weight * res.data.bodyFat / 100;
       const leanMass = res.data.weight - fatMass;
-
-      // Fórmula de Müller et al. (2004) + Factor Térmico 1.1 (coincide con tu Excel)
       const basal = 13.587 * leanMass + 9.613 * fatMass + (res.data.sex === 'male' ? 198 : 0) - 3.351 * res.data.age + 674;
-      const maintenance = basal * act * 1.1;
+      const maintenance = basal * act * 1.1; // Con factor 1.1
       const targetKcal = Math.round(maintenance * (1 + adj / 100));
 
       const split = getMacroSplit();
@@ -798,7 +839,7 @@
       const fLabel = document.querySelector('label[for="macroFat"] small');
 
       if (cLabel) cLabel.innerHTML = `Energía · <b style="color:#111;">${cGrams} g</b> (${Math.round(cKcal)} kcal)`;
-      if (pLabel) pLabel.innerHTML = `Protección · <b style="color:#111;">${pGrams} g</b> (${Math.round(pKcal)} kcal)`;
+      if (pLabel) pLabel.innerHTML = `Protección · <b style="color:var(--red);">${pGrams} g</b> (${Math.round(pKcal)} kcal)`;
       if (fLabel) fLabel.innerHTML = `Hormonas · <b style="color:#111;">${fGrams} g</b> (${Math.round(fKcal)} kcal)`;
 
       const totalNote = $('macroTotalNote');
@@ -815,7 +856,6 @@
       updateStep2LiveFeedback();
     }
 
-    // Actualización de macros al modificar ajuste (%) o actividad
     function updateMacrosFromAdjustment() {
       const res = readProfile();
       if (!res.error) {
@@ -891,7 +931,7 @@
       try {
         catalog = Array.isArray(window.CATALOGO_VENEZUELA) ? window.CATALOGO_VENEZUELA : [];
         foodByCode = Object.fromEntries(catalog.map(f => [f.code, f]));
-        $('catalogStatus').textContent = `${catalog.length} alimentos de tabla local + FatSecret México conectados.`;
+        $('catalogStatus').textContent = `${catalog.length} alimentos de tabla oficial + FatSecret México conectados.`;
       } catch (e) {
         $('catalogStatus').textContent = 'Error al cargar catálogo.';
       }
@@ -913,9 +953,8 @@
       }
     }
 
-    // Filtro para descartar platos preparados y combos
     function isCompositeRecipe(name) {
-      const recipeTerms = /\b(style|estilo|receta|recipe|combo|familiar|para compartir|olla|plato|menu|menú|guisad|hornead|caser|al horno|en salsa|con queso|con pollo)\b/i;
+      const recipeTerms = /\b(style|estilo|receta|recipe|combo|familiar|para compartir|olla|plato|menu|menú|guisad|hornead|caser|al horno|en salsa|soup|stew)\b/i;
       return recipeTerms.test(name);
     }
 
@@ -932,7 +971,6 @@
         return;
       }
 
-      // 1. Mostrar alimentos de la tabla oficial (624 alimentos) de inmediato
       const localMatches = catalog.filter(f => normalizeSearch(f.name).includes(q));
 
       if (localMatches.length > 0) {
@@ -943,17 +981,13 @@
 
       clearTimeout(searchDebounceTimer);
       searchDebounceTimer = setTimeout(async () => {
-        // 2. Traer alimentos de FatSecret México
         const fsResults = await searchFatSecret(q);
-
-        // Descartar platos gigantes (> 900 kcal) y recetas compuestas
-        const cleanFs = fsResults.filter(f => !isCompositeRecipe(f.name) && f.kcal <= 900 && (f.kcal > 0 || f.name.toLowerCase().includes('agua')));
+        const cleanFs = fsResults.filter(f => !isCompositeRecipe(f.name) && f.kcal <= 900);
 
         cleanFs.forEach(f => {
           foodByCode[f.code] = f;
         });
 
-        // Mostramos hasta 10 locales y hasta 20 de FatSecret para que nunca se oculte crema de arroz
         const combinedLocal = localMatches.slice(0, 10);
         const combinedFs = cleanFs.slice(0, 20);
 
@@ -1000,8 +1034,6 @@
       return html;
     }
 
-    // Selección de alimento limpia (sin sobrescribir botones de unidad)
-    // Detección estricta de líquidos reales
     function isLiquidFood(name) {
       const norm = normalizeSearch(name);
       const liquids = ['leche', 'jugo', 'agua', 'refresco', 'aceite', 'caldo', 'bebida', 'cerveza', 'vino', 'suero'];
@@ -1017,23 +1049,17 @@
       $('searchCount').textContent = `Seleccionado: ${food.name}`;
       $('addFood').disabled = false;
 
-      // Si es un líquido (leche, aceite, agua), permite Ml por defecto
-      if (isLiquidFood(food.name)) {
-        currentSelectedUnit = 'Ml';
-      } else {
-        // Si es sólido (arroz, carne, pan), obliga a Gr para evitar errores
-        currentSelectedUnit = 'Gr';
-      }
+      currentSelectedUnit = isLiquidFood(food.name) ? 'Ml' : 'Gr';
       $('foodUnitBadge').textContent = currentSelectedUnit;
       $('foodAmountLabel').textContent = `Cantidad consumida (${currentSelectedUnit})`;
     }
 
-    // El botón gris permite alternar libremente entre Gr y Ml
+    // Botón selector Gr / Ml
     $('foodUnitBadge').addEventListener('click', () => {
       currentSelectedUnit = (currentSelectedUnit === 'Gr') ? 'Ml' : 'Gr';
       $('foodUnitBadge').textContent = currentSelectedUnit;
       $('foodAmountLabel').textContent = `Cantidad consumida (${currentSelectedUnit})`;
-      showToast(`Medida cambiada a: ${currentSelectedUnit}`);
+      showToast(`Medida: ${currentSelectedUnit}`);
     });
 
     loadCatalog();
@@ -1085,15 +1111,15 @@
       return { data };
     }
 
-    // Cálculo estricto de Tasa Metabólica y Calorías con Fórmula de Müller et al. (2004)
+    // Cálculo estricto con Fórmula de Müller + Factor 1.1 exacto a tu calculadora
     function calculate(data) {
       const fatMass = data.weight * data.bodyFat / 100;
       const leanMass = data.weight - fatMass;
       const basal = 13.587 * leanMass + 9.613 * fatMass + (data.sex === 'male' ? 198 : 0) - 3.351 * data.age + 674;
-      const maintenance = basal * data.activity;
+      const maintenance = basal * data.activity * 1.1; // Factor 1.1 activo
       const adjusted = maintenance * (1 + data.adjustment / 100);
       
-      const macroSplit = data.macroSplit || { carbs: 45, protein: 30, fat: 25 };
+      const macroSplit = data.macroSplit || getRecommendedMacros(data.weight / Math.pow(data.height / 100, 2), data.adjustment, data.activity);
       const carbsKcal = adjusted * macroSplit.carbs / 100;
       const proteinKcal = adjusted * macroSplit.protein / 100;
       const fatKcal = adjusted * macroSplit.fat / 100;
@@ -1149,25 +1175,18 @@
       $('methodText').innerHTML = `<b>Fórmula de Müller et al. (2004):</b> Basada en Masa Magra (${fmt(plan.leanMass, 1)} kg) y Masa Grasa (${fmt(plan.fatMass, 1)} kg). Gasto de mantenimiento: ${fmt(plan.maintenance)} kcal. Ajuste calórico: ${plan.adjustment}%.`;
     }
 
-    // Escalado exacto respetando la unidad elegida (Gr o Ml)
-   function scaled(id, amount, customUnit = null) {
+    function scaled(id, amount, customUnit = null) {
       const food = foodByCode[id];
       if (!food) return null;
       
       const unit = customUnit || currentSelectedUnit;
       let effectiveGrams = amount;
 
-      // Conversión por densidad si se ingresa en Mililitros (Ml)
       if (unit === 'Ml') {
         const norm = normalizeSearch(food.name);
-        if (norm.includes('aceite')) {
-          effectiveGrams = amount * 0.92; // El aceite es más ligero que el agua (densidad 0.92)
-        } else if (norm.includes('leche')) {
-          effectiveGrams = amount * 1.03; // La leche es ligeramente más densa (1.03)
-        } else if (!isLiquidFood(food.name)) {
-          // Si por alguna razón se midió un sólido en Ml (ej. arroz crudo en taza)
-          effectiveGrams = amount * 0.85; // Densidad a granel aproximada
-        }
+        if (norm.includes('aceite')) effectiveGrams = amount * 0.92;
+        else if (norm.includes('leche')) effectiveGrams = amount * 1.03;
+        else if (!isLiquidFood(food.name)) effectiveGrams = amount * 0.85;
       }
 
       const factor = effectiveGrams / 100;
@@ -1175,21 +1194,9 @@
       const carbs = Number((food.carbs * factor).toFixed(1));
       const fat = Number((food.fat * factor).toFixed(1));
       const fiber = Number(((food.fiber || 0) * factor).toFixed(1));
-
-      // Fórmula Atwater exacta
       const kcal = Math.round((protein * 4) + (carbs * 4) + (fat * 9));
 
-      return {
-        id,
-        amount,
-        unit,
-        name: food.name,
-        kcal,
-        protein,
-        carbs,
-        fat,
-        fiber
-      };
+      return { id, amount, unit, name: food.name, kcal, protein, carbs, fat, fiber };
     }
 
     function totals() {
@@ -1281,176 +1288,88 @@
       `;
     }
 
-    $('generateAiMenuBtn').addEventListener('click', async () => {
-      const apiKey = AI_CONFIG.apiKey.trim();
-      const extras = $('aiIngredientsExtra').value.trim();
-      const preference = $('aiPreferences').value;
-      const outBox = $('aiOutput');
+    // BOTÓN: PDF RÁPIDO IDÉNTICO A LA IMAGEN ADJUNTA
+    // GENERADOR DE TICKET / FICHA NUTRICIONAL RÁPIDA (Paso 3)
+    $('downloadPdf').addEventListener('click', () => {
+      if (!plan) return;
 
-      if (!apiKey || apiKey.includes('PEGA_AQUI')) {
-        showToast('Debes ingresar tu API Key completa en AI_CONFIG.');
-        outBox.innerHTML = '<span style="color:#e33333;font-weight:bold;">⚠️ Falta la API Key:</span>\nIngresa tu clave en AI_CONFIG.apiKey.';
-        return;
-      }
-
-      if (!entries.length) {
-        showToast('Registra al menos 1 o 2 alimentos en el Paso 04.');
-        return;
-      }
-
-      const selectedFoods = entries.map(e => {
-        const f = scaled(e.id, e.amount || e.grams, e.unit);
-        return `${f.name} (${fmt(f.amount)} ${f.unit || 'Gr'})`;
-      }).join(', ');
-
-      const targetCalories = plan ? fmt(plan.adjusted) : '2000';
-      const targetCarbs = plan ? fmt(plan.carbs) : '220';
-      const targetProtein = plan ? fmt(plan.protein) : '150';
-      const targetFat = plan ? fmt(plan.fat) : '60';
-      const daysCount = $('aiDays') ? $('aiDays').value : '1';
-
-      const promptText = `
-Eres un nutricionista y chef deportivo de alto nivel.
-Diseña un plan nutricional práctico con las siguientes pautas:
-
-- DURACIÓN DEL PLAN: ${daysCount} día(s).
-- ALIMENTOS REGISTRADOS: ${selectedFoods}
-- EXTRAS DISPONIBLES: ${extras || 'Condimentos habituales (sal, ajo, aceite, especias)'}
-- METAS DIARIAS: ${targetCalories} kcal (Proteínas: ${targetProtein}g, Carbos: ${targetCarbs}g, Grasas: ${targetFat}g).
-- ESQUEMA DE COMIDAS: ${preference}.
-
-FORMATO REQUERIDO:
-1. Estructura el menú para ${daysCount} día(s) con variedad práctica de recetas.
-2. Nombra cada plato de forma atractiva con sus ingredientes y preparación paso a paso.
-3. Desglosa los macronutrientes y calorías estimadas de cada comida para cumplir la meta diaria.
-4. Incluye recomendaciones de conservación de alimentos y batch cooking (preparación por lotes).
-Sé claro, directo y motivador. Responde en español.
-`;
-
-      let segundos = 0;
-      outBox.textContent = '⏳ Conectando con Gemini 3.5... (0s)';
-      const temporizador = setInterval(() => {
-        segundos++;
-        outBox.textContent = `⏳ Gemini está redactando tus recetas y macros... (${segundos}s)\n(Suele tardar entre 15 y 25 segundos en escribir el plan completo)`;
-      }, 1000);
-
-      try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`;
-        
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: promptText }] }]
-          })
-        });
-
-        clearInterval(temporizador);
-
-        if (!response.ok) {
-          const errData = await response.json().catch(() => ({}));
-          throw new Error(errData.error?.message || `Error HTTP ${response.status}`);
-        }
-
-        const data = await response.json();
-        const parts = data.candidates?.[0]?.content?.parts || [];
-        const fullText = parts.map(p => p.text).filter(Boolean).join('\n') || 'No se recibió texto de respuesta.';
-
-        outBox.textContent = fullText;
-        showToast('¡Menú generado con éxito!');
-
-      } catch (err) {
-        clearInterval(temporizador);
-        outBox.textContent = `❌ Error: ${err.message}\nPor favor intenta nuevamente en unos segundos.`;
-      }
-    });
-
-    $('printFullReportPdfBtn').addEventListener('click', () => {
-      if (!plan) {
-        showToast('Debes calcular primero tu plan.');
-        return;
-      }
-
-      const date = new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'long', year: 'numeric' }).format(new Date());
+      const dateStr = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
       const intake = totals();
-      const aiMenuText = $('aiOutput').textContent.trim();
-
-      const foodsRows = entries.map(e => {
-        const f = scaled(e.id, e.amount || e.grams, e.unit);
-        return `
-          <tr>
-            <td>${escapeHTML(f.name)}</td>
-            <td class="num">${fmt(f.amount)} ${f.unit || 'Gr'}</td>
-            <td class="num">${fmt(f.kcal)}</td>
-            <td class="num">${fmt(f.protein, 1)} g</td>
-            <td class="num">${fmt(f.carbs, 1)} g</td>
-            <td class="num">${fmt(f.fat, 1)} g</td>
-          </tr>
-        `;
-      }).join('');
 
       const printHtml = `
-        <div class="p-head">
-          <div>
-            <h1>Plan Nutricional y Menú Personalizado</h1>
-            <p>Entrenador personal: Diego Sánchez · Fecha: ${date}</p>
-          </div>
+        <div class="ticket-head">
+          <h3>PLAN MACRO</h3>
+          <span>Entrenador personal Diego Sánchez</span>
         </div>
+        <div class="ticket-red-line"></div>
 
-        <div class="p-section">
-          <h2>1. Perfil del Cliente</h2>
-          <div class="p-grid">
-            <div class="p-item"><span>Nombre / Ref:</span> <b>${plan.name || 'Consulta'}</b></div>
-            <div class="p-item"><span>Sexo / Edad:</span> <b>${plan.sex === 'male' ? 'Masculino' : 'Femenino'} / ${plan.age} años</b></div>
-            <div class="p-item"><span>Peso / Estatura:</span> <b>${fmt(plan.weight, 1)} kg / ${plan.height} cm</b></div>
-            <div class="p-item"><span>Grasa Corporal:</span> <b>${fmt(plan.bodyFat, 1)} %</b></div>
-            <div class="p-item"><span>Masa Magra / Grasa:</span> <b>${fmt(plan.leanMass, 1)} kg / ${fmt(plan.fatMass, 1)} kg</b></div>
-            <div class="p-item"><span>Gasto Mantenimiento:</span> <b>${fmt(plan.maintenance)} kcal</b></div>
-          </div>
-        </div>
+        <h1 class="ticket-title">REPORTE NUTRICIONAL</h1>
+        <p class="ticket-date">Generado el ${dateStr}</p>
 
-        <div class="p-section">
-          <h2>2. Objetivos y Macronutrientes</h2>
-          <div class="p-grid">
-            <div class="p-item"><span>Meta Calórica:</span> <b>${fmt(plan.adjusted)} kcal (${plan.adjustment > 0 ? '+' : ''}${plan.adjustment}%)</b></div>
-            <div class="p-item"><span>Carbohidratos:</span> <b>${fmt(plan.carbs)} g (${fmt(plan.macroSplit.carbs, 1)}%)</b></div>
-            <div class="p-item"><span>Proteínas:</span> <b>${fmt(plan.protein)} g (${fmt(plan.macroSplit.protein, 1)}%)</b></div>
-            <div class="p-item"><span>Grasas:</span> <b>${fmt(plan.fat)} g (${fmt(plan.macroSplit.fat, 1)}%)</b></div>
-            <div class="p-item"><span>Proteína Relativa:</span> <b>${fmt(plan.protein / plan.weight, 2)} g/kg</b></div>
-            <div class="p-item"><span>Grasa Relativa:</span> <b>${fmt(plan.fat / plan.weight, 2)} g/kg</b></div>
-          </div>
-        </div>
-
-        <div class="p-section">
-          <h2>3. Alimentos Registrados (${entries.length})</h2>
-          <table class="p-table">
-            <thead>
-              <tr>
-                <th>Alimento</th>
-                <th class="num">Porción</th>
-                <th class="num">Energía</th>
-                <th class="num">Proteína</th>
-                <th class="num">Carbos</th>
-                <th class="num">Grasas</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${foodsRows || '<tr><td colspan="6">Sin alimentos registrados</td></tr>'}
-            </tbody>
-          </table>
-          <p style="font-size:8pt;color:#333;margin:6px 0 0;text-align:right;">
-            <b>Totales del día:</b> ${fmt(intake.kcal)} kcal | P: ${fmt(intake.protein, 1)}g | C: ${fmt(intake.carbs, 1)}g | G: ${fmt(intake.fat, 1)}g | Fibra: ${fmt(intake.fiber, 1)}g
+        <div class="ticket-box">
+          <h2>${(plan.name || 'CLIENTE').toUpperCase()}</h2>
+          <p>
+            ${plan.sex === 'male' ? 'Masculino' : 'Femenino'} &nbsp;|&nbsp; 
+            ${plan.age} años &nbsp;|&nbsp; 
+            ${fmt(plan.weight, 1)} kg &nbsp;|&nbsp; 
+            ${plan.height} cm<br>
+            Grasa corporal ${fmt(plan.bodyFat, 1)}% &nbsp;|&nbsp; 
+            Actividad ${plan.activity} &nbsp;|&nbsp; 
+            Ajuste ${plan.adjustment > 0 ? '+' : ''}${plan.adjustment}%<br>
+            IMC ${fmt(plan.bmi, 1)} &nbsp;|&nbsp; 
+            Masa libre de grasa ${fmt(plan.leanMass, 1)} kg
           </p>
         </div>
 
-        <div class="p-section" style="break-inside:auto;">
-          <h2>4. Plan de Comidas e Indicaciones (Menú IA)</h2>
-          <div class="p-ai-box">${escapeHTML(aiMenuText || 'No se generaron sugerencias de menú todavía.')}</div>
+        <div class="ticket-label">ENERGÍA DIARIA ESTIMADA</div>
+        <div class="ticket-energy">
+          <div class="ticket-energy-val">${fmt(plan.adjusted)} kcal</div>
+          <p class="ticket-energy-sub">
+            Mantenimiento: ${fmt(plan.maintenance)} kcal &nbsp;|&nbsp; 
+            Metabolismo basal: ${fmt(plan.basal)} kcal
+          </p>
         </div>
 
-        <div class="p-footer">
-          <span>Plan Macro · Nutrición y Entrenamiento Aplicado</span>
-          <span>Diego Sánchez</span>
+        <div class="ticket-label">DISTRIBUCIÓN DE MACRONUTRIENTES</div>
+        <div class="ticket-macro-grid">
+          <div class="ticket-macro-card">
+            <div class="ticket-macro-title">Carbohidratos</div>
+            <div class="ticket-macro-pct">${fmt(plan.macroSplit.carbs, 1)}%</div>
+            <div class="ticket-macro-grams">${fmt(plan.carbs)} g</div>
+            <div class="ticket-macro-kcal">${fmt(plan.carbsKcal)} kcal</div>
+          </div>
+          <div class="ticket-macro-card prot">
+            <div class="ticket-macro-title" style="color:#e33333;">Proteína</div>
+            <div class="ticket-macro-pct">${fmt(plan.macroSplit.protein, 1)}%</div>
+            <div class="ticket-macro-grams prot-num">${fmt(plan.protein)} g</div>
+            <div class="ticket-macro-kcal">${fmt(plan.proteinKcal)} kcal</div>
+          </div>
+          <div class="ticket-macro-card">
+            <div class="ticket-macro-title">Grasas</div>
+            <div class="ticket-macro-pct">${fmt(plan.macroSplit.fat, 1)}%</div>
+            <div class="ticket-macro-grams">${fmt(plan.fat)} g</div>
+            <div class="ticket-macro-kcal">${fmt(plan.fatKcal)} kcal</div>
+          </div>
+        </div>
+
+        <div class="ticket-label">REGISTRO DE ALIMENTOS</div>
+        <div class="ticket-food-box">
+          <h4>Energía registrada: ${fmt(intake.kcal)} kcal</h4>
+          <p>
+            Proteína: ${fmt(intake.protein, 1)} g &nbsp;·&nbsp; 
+            Carbohidratos: ${fmt(intake.carbs, 1)} g &nbsp;·&nbsp; 
+            Grasas: ${fmt(intake.fat, 1)} g<br>
+            Fibra: ${fmt(intake.fiber, 1)} g &nbsp;·&nbsp; 
+            Alimentos registrados: ${entries.length}
+          </p>
+        </div>
+
+        <div class="ticket-footer">
+          <b>Lectura responsable</b>
+          <p>
+            Esta estimación es informativa y no sustituye la valoración de un profesional sanitario.<br>
+            Plan Macro · Entrenador personal Diego Sánchez
+          </p>
         </div>
       `;
 
@@ -1458,11 +1377,11 @@ Sé claro, directo y motivador. Responde en español.
       window.print();
     });
 
+    
     document.querySelectorAll('[data-back]').forEach(btn => {
       btn.addEventListener('click', () => goTo(Number(btn.dataset.back) - 1));
     });
 
-    // Actualización de macros al mover los campos de porcentaje
     document.querySelectorAll('[data-macro-input]').forEach(inp => {
       inp.addEventListener('input', () => {
         handleMacroInput(inp);
@@ -1470,6 +1389,7 @@ Sé claro, directo y motivador. Responde en español.
       });
     });
 
+    // BOTÓN PASO 2 -> PASO 3 (Sincronización exacta)
     $('calculateButton').addEventListener('click', () => {
       const res = readProfile();
       const adj = numVal('adjustment');
@@ -1504,9 +1424,6 @@ Sé claro, directo y motivador. Responde en español.
       if (btn) selectFood(btn.dataset.selectFood);
     });
 
-    
-         
-    // Añadir alimento con la unidad seleccionada
     $('addFood').addEventListener('click', () => {
       const amount = numVal('foodGrams');
       const food = foodByCode[selectedFoodCode];
@@ -1533,29 +1450,7 @@ Sé claro, directo y motivador. Responde en español.
       showToast('Alimento eliminado.');
     });
 
-    function triggerDownload(blob, name) {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = name;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 2000);
-    }
-
-    $('downloadPdf').addEventListener('click', () => {
-      if (!plan) return;
-      const text = `PLAN MACRONUTRIENTES - DIEGO SÁNCHEZ\n` +
-        `Cliente: ${plan.name || 'Consulta'}\n` +
-        `Calorías Objetivo: ${fmt(plan.adjusted)} kcal\n` +
-        `Carbohidratos: ${fmt(plan.carbs)}g (${fmt(plan.macroSplit.carbs)}%)\n` +
-        `Proteínas: ${fmt(plan.protein)}g (${fmt(plan.macroSplit.protein)}%)\n` +
-        `Grasas: ${fmt(plan.fat)}g (${fmt(plan.macroSplit.fat)}%)\n` +
-        `Grasa corporal estimada: ${fmt(plan.bodyFat, 1)}%\n`;
-      triggerDownload(new Blob([text], { type: 'text/plain;charset=utf-8' }), `plan-macro-${plan.name || 'resumen'}.txt`);
-      showToast('Reporte generado.');
-    });
-
+    // Exportar / Importar
     $('exportProfileBtn').addEventListener('click', () => {
       const dataToSave = {
         version: "1.0",
