@@ -717,41 +717,77 @@
       }
     });
 
-    function getRecommendedMacros(bmi, goalAdjustment, activityLevel) {
-      let carbs = 45;
+  // 1. Cálculo inteligente y progresivo según la magnitud del ajuste
+    function getRecommendedMacros(bmi, adj, activityLevel) {
       let protein = 30;
       let fat = 25;
+      let carbs = 45;
 
-      const isOverweight = bmi >= 25;
-      const isObese = bmi >= 30;
-      const isDeficit = goalAdjustment < 0;
-      const isSurplus = goalAdjustment > 0;
-      const highActivity = activityLevel >= 1.5;
-
-      if (isDeficit) {
-        if (isObese) {
-          carbs = 30; protein = 40; fat = 30;
-        } else if (isOverweight) {
-          carbs = 35; protein = 35; fat = 30;
+      if (adj < 0) {
+        const deficitMag = Math.abs(adj);
+        if (deficitMag >= 25) {
+          protein = 40; fat = 25; carbs = 35; // Déficit agresivo: alta proteína
+        } else if (deficitMag >= 15) {
+          protein = 35; fat = 25; carbs = 40; // Déficit moderado
+        } else if (deficitMag >= 8) {
+          protein = 32; fat = 25; carbs = 43; // Déficit ligero
         } else {
-          carbs = 40; protein = 35; fat = 25;
+          protein = 30; fat = 25; carbs = 45; // Déficit muy leve (-1% a -7%)
         }
-      } else if (isSurplus) {
-        if (isOverweight) {
-          carbs = 45; protein = 30; fat = 25;
+      } else if (adj > 0) {
+        if (adj >= 15) {
+          protein = 25; fat = 20; carbs = 55; // Superávit alto
         } else {
-          carbs = highActivity ? 55 : 50;
-          protein = 25;
-          fat = highActivity ? 20 : 25;
+          protein = 25; fat = 25; carbs = 50; // Superávit moderado
         }
       } else {
-        if (isOverweight) {
-          carbs = 38; protein = 32; fat = 30;
-        } else {
-          carbs = 45; protein = 30; fat = 25;
-        }
+        protein = 30; fat = 25; carbs = 45; // Mantenimiento exacto (0%)
       }
+
+      if (bmi >= 30 && adj < 0) {
+        protein = Math.min(45, protein + 5);
+        carbs = Math.max(25, carbs - 5);
+      }
+
       return { carbs, protein, fat };
+    }
+
+    // 2. Calcula y muestra los Gramos (g) y Calorías (kcal) en vivo en el Paso 2
+    function updateStep2LiveFeedback() {
+      const res = readProfile();
+      if (res.error) return;
+
+      const adj = numVal('adjustment') || 0;
+      const act = numVal('activity');
+
+      const fatMass = res.data.weight * res.data.bodyFat / 100;
+      const leanMass = res.data.weight - fatMass;
+      const basal = 13.587 * leanMass + 9.613 * fatMass + (res.data.sex === 'male' ? 198 : 0) - 3.351 * res.data.age + 674;
+      const maintenance = basal * act;
+      const targetKcal = Math.round(maintenance * (1 + adj / 100));
+
+      const split = getMacroSplit();
+      const cKcal = targetKcal * (split.carbs / 100);
+      const pKcal = targetKcal * (split.protein / 100);
+      const fKcal = targetKcal * (split.fat / 100);
+
+      const cGrams = Math.round(cKcal / 4);
+      const pGrams = Math.round(pKcal / 4);
+      const fGrams = Math.round(fKcal / 9);
+
+      // Mostrar gramos y calorías calculados en los subtítulos
+      const cLabel = document.querySelector('label[for="macroCarbs"] small');
+      const pLabel = document.querySelector('label[for="macroProtein"] small');
+      const fLabel = document.querySelector('label[for="macroFat"] small');
+
+      if (cLabel) cLabel.innerHTML = `Energía · <b style="color:#111;">${cGrams} g</b> (${Math.round(cKcal)} kcal)`;
+      if (pLabel) pLabel.innerHTML = `Protección · <b style="color:#111;">${pGrams} g</b> (${Math.round(pKcal)} kcal)`;
+      if (fLabel) fLabel.innerHTML = `Hormonas · <b style="color:#111;">${fGrams} g</b> (${Math.round(fKcal)} kcal)`;
+
+      const totalNote = $('macroTotalNote');
+      if (totalNote && macroSplitIsValid(split)) {
+        totalNote.innerHTML = `Meta del día: <b style="color:var(--red); font-size:13px;">${fmt(targetKcal)} kcal</b>`;
+      }
     }
 
     function applySmartMacros(split) {
@@ -759,6 +795,23 @@
       $('macroProtein').value = split.protein;
       $('macroFat').value = split.fat;
       syncMacroUI(split);
+      updateStep2LiveFeedback();
+    }
+
+    function updateMacrosFromAdjustment() {
+      const res = readProfile();
+      if (!res.error) {
+        const heightM = res.data.height / 100;
+        const bmi = res.data.weight / (heightM * heightM);
+        const adj = numVal('adjustment') || 0;
+        const act = numVal('activity');
+
+        document.querySelectorAll('.goal').forEach(btn => {
+          btn.classList.toggle('active', Number.parseFloat(btn.dataset.goal) === adj);
+        });
+
+        applySmartMacros(getRecommendedMacros(bmi, adj, act));
+      }
     }
 
     // CORRECCIÓN PUNTO 1: Recalcular macros en tiempo real al escribir en "Ajuste personalizado (%)" o cambiar "Actividad"
@@ -1346,9 +1399,13 @@ Sé claro, directo y motivador. Responde en español.
       btn.addEventListener('click', () => goTo(Number(btn.dataset.back) - 1));
     });
 
-    document.querySelectorAll('[data-macro-input]').forEach(inp => {
-      inp.addEventListener('input', () => handleMacroInput(inp));
-    });
+    // CÓDIGO NUEVO (SUSTITUTO):
+document.querySelectorAll('[data-macro-input]').forEach(inp => {
+  inp.addEventListener('input', () => {
+    handleMacroInput(inp);
+    updateStep2LiveFeedback(); // <-- Esta línea es la que agregamos
+  });
+});
 
     $('calculateButton').addEventListener('click', () => {
       const res = readProfile();
