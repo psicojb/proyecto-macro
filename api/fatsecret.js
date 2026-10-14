@@ -1,11 +1,12 @@
-﻿const crypto = require('crypto');
+const crypto = require('crypto');
 
-// Codificación estricta RFC 3986 requerida por FatSecret OAuth 1.0
+// Codificación estricta RFC 3986 requerida por el protocolo OAuth 1.0 de FatSecret
 function rfc3986(str) {
   return encodeURIComponent(String(str)).replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16).toUpperCase());
 }
 
 module.exports = async (req, res) => {
+  // Encabezados de CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -18,7 +19,7 @@ module.exports = async (req, res) => {
 
   if (!consumerKey || !consumerSecret) {
     return res.status(500).json({
-      error: 'Faltan variables FATSECRET_CLIENT_ID y FATSECRET_CLIENT_SECRET en Vercel'
+      error: 'Faltan variables FATSECRET_CLIENT_ID y FATSECRET_CLIENT_SECRET en las Variables de Entorno de Vercel'
     });
   }
 
@@ -26,11 +27,11 @@ module.exports = async (req, res) => {
     const httpMethod = 'GET';
     const baseUrl = 'https://platform.fatsecret.com/rest/server.api';
 
-    // Parámetros de consulta y firma OAuth 1.0
+    // 1. Parámetros de la consulta: región México en español
     const params = {
       format: 'json',
       language: 'es',
-      max_results: '10',
+      max_results: '15', // Solicitamos 15 para compensar las recetas que descartamos
       method: 'foods.search',
       oauth_consumer_key: consumerKey.trim(),
       oauth_nonce: crypto.randomBytes(16).toString('hex'),
@@ -41,40 +42,46 @@ module.exports = async (req, res) => {
       search_expression: query.trim()
     };
 
-    // 1. Ordenar los parámetros alfabéticamente
+    // 2. Ordenar alfabéticamente los parámetros
     const sortedKeys = Object.keys(params).sort();
     const paramString = sortedKeys.map(k => `${rfc3986(k)}=${rfc3986(params[k])}`).join('&');
 
-    // 2. Crear la cadena base de la firma (Signature Base String)
+    // 3. Crear la cadena base de la firma
     const signatureBaseString = `${httpMethod}&${rfc3986(baseUrl)}&${rfc3986(paramString)}`;
 
-    // 3. Crear la clave de firma (Consumer Secret + &)
+    // 4. Clave de firma criptográfica (Consumer Secret + &)
     const signingKey = `${rfc3986(consumerSecret.trim())}&`;
 
-    // 4. Generar la firma HMAC-SHA1
+    // 5. Generar la firma HMAC-SHA1
     const signature = crypto.createHmac('sha1', signingKey).update(signatureBaseString).digest('base64');
 
-    // 5. URL final con la firma incorporada
+    // 6. Construir la URL completa con la firma
     const requestUrl = `${baseUrl}?${paramString}&oauth_signature=${rfc3986(signature)}`;
 
-    // 6. Consultar a FatSecret
+    // 7. Petición oficial a FatSecret
     const apiRes = await fetch(requestUrl);
     const searchResponse = await apiRes.json().catch(() => ({}));
 
-    // Detectar si FatSecret reporta algún error de credenciales
+    // Detectar si FatSecret devolvió algún error
     if (searchResponse.error) {
       throw new Error(`FatSecret Error (${searchResponse.error.code}): ${searchResponse.error.message}`);
     }
 
     const rawFoods = searchResponse.foods?.food;
-    const foodList = Array.isArray(rawFoods) ? rawFoods : (rawFoods ? [rawFoods] : []);
+    const allFoods = Array.isArray(rawFoods) ? rawFoods : (rawFoods ? [rawFoods] : []);
 
+    // 8. FILTRO ANTIRECETAS: Descarta platos compuestos, combos y estilos de restaurante
+    const recipePattern = /(?:style|estilo|receta|recipe|combo|menú|menu|preparado con|guisado con|al horno con|a la criolla)/i;
+    const foodList = allFoods.filter(item => !recipePattern.test(item.food_name || ''));
+
+    // Función auxiliar para extraer números con coma o punto decimal
     const parseMacro = (text, regex) => {
       const match = text.match(regex);
       if (!match) return 0;
       return parseFloat(match[1].replace(',', '.')) || 0;
     };
 
+    // 9. Mapeo de macronutrientes al formato exacto de tu aplicación
     const results = foodList.map(item => {
       const desc = item.food_description || '';
 
