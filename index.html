@@ -982,6 +982,13 @@
     }
 
     // Selección de alimento limpia (sin sobrescribir botones de unidad)
+    // Detección estricta de líquidos reales
+    function isLiquidFood(name) {
+      const norm = normalizeSearch(name);
+      const liquids = ['leche', 'jugo', 'agua', 'refresco', 'aceite', 'caldo', 'bebida', 'cerveza', 'vino', 'suero'];
+      return liquids.some(liq => norm.includes(liq));
+    }
+
     function selectFood(code) {
       const food = foodByCode[code];
       if (!food) return;
@@ -990,7 +997,25 @@
       $('foodResults').hidden = true;
       $('searchCount').textContent = `Seleccionado: ${food.name}`;
       $('addFood').disabled = false;
+
+      // Si es un líquido (leche, aceite, agua), permite Ml por defecto
+      if (isLiquidFood(food.name)) {
+        currentSelectedUnit = 'Ml';
+      } else {
+        // Si es sólido (arroz, carne, pan), obliga a Gr para evitar errores
+        currentSelectedUnit = 'Gr';
+      }
+      $('foodUnitBadge').textContent = currentSelectedUnit;
+      $('foodAmountLabel').textContent = `Cantidad consumida (${currentSelectedUnit})`;
     }
+
+    // El botón gris permite alternar libremente entre Gr y Ml
+    $('foodUnitBadge').addEventListener('click', () => {
+      currentSelectedUnit = (currentSelectedUnit === 'Gr') ? 'Ml' : 'Gr';
+      $('foodUnitBadge').textContent = currentSelectedUnit;
+      $('foodAmountLabel').textContent = `Cantidad consumida (${currentSelectedUnit})`;
+      showToast(`Medida cambiada a: ${currentSelectedUnit}`);
+    });
 
     loadCatalog();
 
@@ -1106,23 +1131,39 @@
     }
 
     // Escalado exacto respetando la unidad elegida (Gr o Ml)
-    function scaled(id, amount, customUnit = null) {
+   function scaled(id, amount, customUnit = null) {
       const food = foodByCode[id];
       if (!food) return null;
       
-      const factor = amount / 100;
+      const unit = customUnit || currentSelectedUnit;
+      let effectiveGrams = amount;
+
+      // Conversión por densidad si se ingresa en Mililitros (Ml)
+      if (unit === 'Ml') {
+        const norm = normalizeSearch(food.name);
+        if (norm.includes('aceite')) {
+          effectiveGrams = amount * 0.92; // El aceite es más ligero que el agua (densidad 0.92)
+        } else if (norm.includes('leche')) {
+          effectiveGrams = amount * 1.03; // La leche es ligeramente más densa (1.03)
+        } else if (!isLiquidFood(food.name)) {
+          // Si por alguna razón se midió un sólido en Ml (ej. arroz crudo en taza)
+          effectiveGrams = amount * 0.85; // Densidad a granel aproximada
+        }
+      }
+
+      const factor = effectiveGrams / 100;
       const protein = Number((food.protein * factor).toFixed(1));
       const carbs = Number((food.carbs * factor).toFixed(1));
       const fat = Number((food.fat * factor).toFixed(1));
       const fiber = Number(((food.fiber || 0) * factor).toFixed(1));
 
-      // Factores de Atwater: 4 kcal por gramo de Proteína y Carbos, 9 por Grasa
+      // Fórmula Atwater exacta
       const kcal = Math.round((protein * 4) + (carbs * 4) + (fat * 9));
 
       return {
         id,
         amount,
-        unit: customUnit || currentSelectedUnit,
+        unit,
         name: food.name,
         kcal,
         protein,
@@ -1444,13 +1485,8 @@ Sé claro, directo y motivador. Responde en español.
       if (btn) selectFood(btn.dataset.selectFood);
     });
 
-    // BOTÓN SELECTOR: Alterna limpiamente entre Gr y Ml cada vez que lo tocas
-    // BOTÓN SELECTOR: Alterna limpiamente entre Gr y Ml cada vez que lo tocas
-    if ($('foodUnitBadge')) {
-      $('foodUnitBadge').addEventListener('click', () => {
-        currentSelectedUnit = (currentSelectedUnit === 'Gr') ? 'Ml' : 'Gr';
-        $('foodUnitBadge').textContent = currentSelectedUnit;
-        
+    
+            
         // Actualiza la etiqueta directamente sin depender de unitTextIndicator
         if ($('foodAmountLabel')) {
           $('foodAmountLabel').textContent = `Cantidad consumida (${currentSelectedUnit})`;
