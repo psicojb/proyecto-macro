@@ -913,6 +913,12 @@
       }
     }
 
+  // Filtro para descartar recetas, combos o platos preparados
+    function isCompositeRecipe(name) {
+      const recipeTerms = /(?:style|estilo|receta|recipe|combo|menú|menu|preparado con|guisado con|al horno con|a la criolla)/i;
+      return recipeTerms.test(name);
+    }
+
     async function renderSearchResults() {
       const q = normalizeSearch($('foodSearch').value);
       const panel = $('foodResults');
@@ -926,42 +932,81 @@
         return;
       }
 
-      count.textContent = 'Buscando en FatSecret México...';
+      // 1. OBTENER PRIMERO LOS ALIMENTOS DE TU TABLA LOCAL (Inmediato, 0ms)
+      const localMatches = catalog.filter(f => normalizeSearch(f.name).includes(q) && !isCompositeRecipe(f.name));
+
+      // Mostrar resultados locales de inmediato mientras consulta FatSecret
+      if (localMatches.length > 0) {
+        panel.hidden = false;
+        panel.innerHTML = renderFoodButtons(localMatches.slice(0, 8), []);
+        count.textContent = `Buscando también en FatSecret México...`;
+      }
 
       clearTimeout(searchDebounceTimer);
       searchDebounceTimer = setTimeout(async () => {
+        // 2. CONSULTAR FATSECRET MÉXICO
         const fsResults = await searchFatSecret(q);
 
-        fsResults.forEach(f => {
+        // Filtrar recetas o platos completos de FatSecret
+        const cleanFsResults = fsResults.filter(f => !isCompositeRecipe(f.name));
+
+        cleanFsResults.forEach(f => {
           foodByCode[f.code] = f;
         });
 
-        const localMatches = catalog.filter(f => normalizeSearch(f.name).includes(q));
-        const combined = [...fsResults, ...localMatches].slice(0, 10);
+        // 3. COMBINAR: Hasta 6 de la tabla local + hasta 8 de FatSecret (sin taparse entre sí)
+        const combinedLocal = localMatches.slice(0, 6);
+        const combinedFs = cleanFsResults.slice(0, 8);
 
-        if (!combined.length) {
+        if (!combinedLocal.length && !combinedFs.length) {
           panel.hidden = false;
-          panel.innerHTML = '<div style="padding:10px;font-size:11px;color:#aaa;">No se encontraron alimentos en FatSecret México ni en el catálogo.</div>';
+          panel.innerHTML = '<div style="padding:10px;font-size:11px;color:#aaa;">No se encontraron alimentos simples para esta búsqueda.</div>';
           count.textContent = '0 resultados.';
           return;
         }
 
         panel.hidden = false;
-        panel.innerHTML = combined.map(f => {
+        panel.innerHTML = renderFoodButtons(combinedLocal, combinedFs);
+        count.textContent = `Mostrando ${combinedLocal.length} de la tabla oficial + ${combinedFs.length} de FatSecret México.`;
+      }, 300);
+    }
+
+    // Generador de botones con etiquetas claras (Verde = Tabla Oficial, Dorado = FatSecret)
+    function renderFoodButtons(localList, fsList) {
+      let html = '';
+
+      if (localList.length) {
+        html += localList.map(f => {
           const unit = isLiquidFood(f.name) ? 'ml' : 'g';
           return `
             <button type="button" class="food-result" data-select-food="${f.code}">
               <span>
-                <strong>${escapeHTML(f.name)} ${f.brand && f.brand !== 'Genérico' ? `<small style="color:#d7b45b;">(${escapeHTML(f.brand)})</small>` : ''}</strong>
+                <strong>${escapeHTML(f.name)} <small style="color:var(--green);font-weight:700;">[Tabla Oficial]</small></strong>
                 <small>${fmt(f.protein, 1)}g P · ${fmt(f.carbs, 1)}g C · ${fmt(f.fat, 1)}g G (por 100${unit})</small>
               </span>
               <b>${fmt(f.kcal)} kcal</b>
             </button>
           `;
         }).join('');
+      }
 
-        count.textContent = `Mostrando ${combined.length} resultados (FatSecret México).`;
-      }, 300);
+      if (fsList.length) {
+        html += fsList.map(f => {
+          const unit = isLiquidFood(f.name) ? 'ml' : 'g';
+          const brandText = f.brand && f.brand !== 'Genérico' ? f.brand : 'México';
+          return `
+            <button type="button" class="food-result" data-select-food="${f.code}">
+              <span>
+                <strong>${escapeHTML(f.name)} <small style="color:var(--gold);font-weight:700;">[FatSecret: ${escapeHTML(brandText)}]</small></strong>
+                <small>${fmt(f.protein, 1)}g P · ${fmt(f.carbs, 1)}g C · ${fmt(f.fat, 1)}g G (por 100${unit})</small>
+              </span>
+              <b>${fmt(f.kcal)} kcal</b>
+            </button>
+          `;
+        }).join('');
+      }
+
+      return html;
     }
 
     // CORRECCIÓN PUNTO 3: Ajustar interfaz según si es sólido (g) o líquido (ml)
