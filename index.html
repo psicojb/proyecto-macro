@@ -256,6 +256,7 @@
     .registered-food-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
     .registered-food-tags span { padding: 5px 9px; border: 1px solid #4a474d; background: #222125; color: #f5eee8; font-size: 11px; border-radius: 3px; font-weight: 600; }
     
+    /* PANTALLA IA */
     .ai-screen { grid-template-columns: 36% 64%; min-height: 620px; background: var(--paper); color: var(--black); }
     .ai-config { padding: 32px 28px; background: var(--black); color: #f6f2eb; }
     .ai-config h2 { margin: 6px 0 8px; font-size: 30px; }
@@ -265,23 +266,26 @@
     
     .ai-output-panel { padding: 32px 28px; overflow-y: auto; display: flex; flex-direction: column; }
     .ai-output-panel h2 { margin: 6px 0 8px; font-size: 28px; }
+    
     .ai-box { 
-      min-height: 250px; 
-      max-height: 480px; 
+      min-height: 280px; 
+      max-height: 520px; 
       overflow-y: auto; 
-      padding: 16px; 
+      padding: 18px; 
       border: 1px solid #d5cdc3; 
       background: var(--white); 
       border-radius: 4px; 
-      color: #201e23; 
+      color: #1a191d; 
       line-height: 1.6; 
       font-size: 13px; 
       margin-bottom: 16px; 
     }
-    .ai-box h3 { margin: 14px 0 4px; color: var(--red); font-size: 15px; }
-    .ai-box h4 { margin: 10px 0 2px; color: #111; font-size: 13px; font-weight: 800; }
-    .ai-box ul { margin: 4px 0 12px 18px; padding: 0; }
-    .ai-box li { margin-bottom: 3px; }
+    .ai-box h3 { margin: 16px 0 6px; color: var(--red); font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+    .ai-box h4 { margin: 12px 0 4px; color: #111; font-size: 13.5px; font-weight: 800; }
+    .ai-box .meal-nutri-tag { display: inline-block; background: #ebe5dc; color: #222; font-weight: 800; font-size: 11px; padding: 3px 8px; border-radius: 3px; margin: 4px 0 8px; }
+    .ai-box ol { margin: 6px 0 14px 20px; padding: 0; }
+    .ai-box ul { margin: 6px 0 14px 20px; padding: 0; }
+    .ai-box li { margin-bottom: 4px; }
     .ai-empty { color: #888289; font-style: italic; }
     
     .toast { position: fixed; z-index: 100; right: 16px; bottom: 16px; max-width: 300px; padding: 10px 14px; border-left: 3px solid var(--red); background: white; color: var(--black); box-shadow: 0 10px 25px rgba(0,0,0,.3); font-size: 12px; font-weight: 600; border-radius: 0 4px 4px 0; transform: translateY(70px); opacity: 0; transition: .2s ease; }
@@ -358,85 +362,6 @@
       .nav .btn { width: 100%; }
       .report-actions { width: 100%; margin-top: 8px; }
       .report-actions .btn { width: 100%; }
-    }
-
-    /* =========================================================
-       ESTILOS DE IMPRESIÓN (TICKET PASO 3 + REPORTE COMPLETO PASO 6)
-       ========================================================= */
-    #printArea { display: none; }
-
-    @page { size: portrait; margin: 0.8cm; }
-
-    @media print {
-      html, body { 
-        background: #ffffff !important; 
-        color: #000000 !important; 
-        margin: 0 !important; 
-        padding: 0 !important; 
-        width: 100% !important; 
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important; 
-      }
-      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      .app, .toast, header, nav, .wizard, footer { display: none !important; }
-      
-      #printArea { 
-        display: block !important; 
-        width: 100% !important; 
-        margin: 0 auto !important; 
-        padding: 0 !important; 
-        background: #ffffff !important; 
-        color: #000000 !important;
-      }
-      
-      /* ESTILOS DEL TICKET RÁPIDO (PASO 3) */
-      .ticket-wrap { max-width: 680px; margin: 0 auto; padding: 10px; }
-      .ticket-head { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 6px; }
-      .ticket-head h3 { margin: 0; font-size: 13pt; font-weight: 900; color: #000; letter-spacing: -0.02em; }
-      .ticket-head span { font-size: 8.5pt; color: #333; }
-      .ticket-red-line { height: 3px; background: #e33333; margin-bottom: 16px; }
-      .ticket-title { font-size: 18pt; font-weight: 900; margin: 0 0 2px 0; color: #000; letter-spacing: -0.03em; text-align: left; }
-      .ticket-date { font-size: 8.5pt; color: #444; margin: 0 0 14px 0; text-align: left; }
-      .ticket-box { border: 1.5px solid #000000; border-radius: 4px; padding: 12px 14px; margin-bottom: 12px; background: #ffffff !important; text-align: left; }
-      .ticket-box h2 { margin: 0 0 4px 0; font-size: 13pt; font-weight: 900; color: #000000; }
-      .ticket-box p { margin: 0; font-size: 8.5pt; color: #111111; line-height: 1.4; font-weight: 600; }
-      .ticket-label { font-size: 8pt; font-weight: 900; color: #e33333; text-transform: uppercase; letter-spacing: 0.06em; margin: 12px 0 4px 0; text-align: left; }
-      .ticket-energy { border: 2px solid #000000; border-radius: 4px; padding: 12px 16px; margin-bottom: 12px; background: #ffffff !important; text-align: left; }
-      .ticket-energy-val { font-size: 28pt; font-weight: 900; line-height: 1; margin: 0 0 4px 0; color: #000000; }
-      .ticket-energy-sub { font-size: 8.5pt; color: #111111; margin: 0; font-weight: 600; }
-      .ticket-macro-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
-      .ticket-macro-card { border: 1.5px solid #000000; border-top: 4px solid #000000; border-radius: 3px; padding: 8px 10px; background: #ffffff !important; text-align: left; }
-      .ticket-macro-card.prot { border-top-color: #e33333; }
-      .ticket-macro-title { font-size: 8pt; font-weight: 900; margin: 0; color: #000000; text-transform: uppercase; }
-      .ticket-macro-pct { font-size: 7.5pt; color: #444; margin: 0 0 4px 0; font-weight: 700; }
-      .ticket-macro-grams { font-size: 18pt; font-weight: 900; line-height: 1; margin: 0 0 3px 0; color: #000000; }
-      .ticket-macro-grams.prot-num { color: #e33333; }
-      .ticket-macro-kcal { font-size: 7.5pt; color: #333; margin: 0; font-weight: 600; }
-      .ticket-food-box { border: 1.5px solid #666; border-left: 4px solid #e33333; border-radius: 3px; padding: 10px 12px; margin-bottom: 12px; background: #ffffff !important; text-align: left; }
-      .ticket-food-box h4 { margin: 0 0 4px 0; font-size: 9.5pt; font-weight: 900; color: #000; }
-      .ticket-food-box p { margin: 0; font-size: 8pt; color: #111; line-height: 1.35; font-weight: 500; }
-      .ticket-footer { border-top: 1px dashed #666; padding-top: 8px; margin-top: 14px; text-align: left; }
-      .ticket-footer b { display: block; color: #000; font-size: 7.5pt; text-transform: uppercase; margin-bottom: 2px; }
-      .ticket-footer p { margin: 0; font-size: 7pt; color: #444; line-height: 1.3; }
-
-      /* ESTILOS DEL REPORTE COMPLETO A4 + MENÚ IA (PASO 6) */
-      .report-wrap { width: 100%; max-width: 100%; padding: 10px; }
-      .p-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1.5px solid #000; padding-bottom: 6px; margin-bottom: 12px; }
-      .p-head h1 { margin: 0; font-size: 13pt; font-weight: 800; text-transform: uppercase; color: #000; }
-      .p-head p { margin: 2px 0 0; font-size: 8pt; color: #333; }
-      .p-section { margin-bottom: 12px; break-inside: avoid; }
-      .p-section h2 { margin: 0 0 5px; font-size: 9pt; font-weight: 800; text-transform: uppercase; border-bottom: 1px solid #777; padding-bottom: 2px; color: #000; }
-      .p-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 10px; padding: 8px; border: 1px solid #bbb; border-radius: 3px; background: #ffffff !important; }
-      .p-item span { display: block; font-size: 7pt; color: #555; text-transform: uppercase; }
-      .p-item b { font-size: 8.5pt; font-weight: 700; color: #000; }
-      .p-table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 8pt; }
-      .p-table th { border-top: 1px solid #000; border-bottom: 1.5px solid #000; padding: 4px 5px; font-size: 7.5pt; font-weight: 700; text-transform: uppercase; text-align: left; color: #000; }
-      .p-table td { border-bottom: 1px solid #e0e0e0; padding: 4px 5px; color: #111; }
-      .p-table td.num, .p-table th.num { text-align: right; }
-      .p-ai-box { border: 1px solid #ccc; padding: 10px; border-radius: 3px; font-size: 8.5pt; line-height: 1.45; color: #111; background: #fff !important; break-inside: auto; }
-      .p-ai-box h3 { margin: 8px 0 3px; font-size: 9.5pt; color: #e33333; }
-      .p-ai-box h4 { margin: 6px 0 2px; font-size: 8.5pt; font-weight: bold; }
-      .p-ai-box ul { margin: 4px 0 8px 16px; padding: 0; }
-      .p-footer { margin-top: 14px; padding-top: 6px; border-top: 1px solid #ccc; display: flex; justify-content: space-between; font-size: 7pt; color: #666; }
     }
   </style>
 </head>
@@ -712,7 +637,7 @@
           </div>
           
           <div class="composition-note">
-            <b>Nota:</b> Los nutrientes se recalculan automáticamente según la cantidad exacta que consumas.
+            <b>Nota:</b> Los alimentos que selecciones aquí serán la base estricta que utilizará el especialista de IA para armar tu menú.
           </div>
           
           <div class="nav">
@@ -740,14 +665,14 @@
       <!-- PASO 6: PLANIFICADOR DE MENÚ CON IA -->
       <section class="screen ai-screen" data-screen="6">
         <section class="ai-config">
-          <div class="eyebrow"><i></i> Paso 06 de 06 · Menú IA</div>
+          <div class="eyebrow"><i></i> Paso 06 de 06 · Nutrición Deportiva IA</div>
           <h2>Planificador<br><em>de comidas.</em></h2>
-          <p style="font-size:12px;color:#bbb;line-height:1.5;">La inteligencia artificial diseña ideas de platos y preparación utilizando los alimentos registrados en tu día.</p>
+          <p style="font-size:12px;color:#bbb;line-height:1.5;">El especialista en nutrición deportiva estructura tus platos utilizando <b>exclusivamente tus alimentos seleccionados</b> y calculando los macros de cada comida con sus recetas paso a paso.</p>
           
-          <label for="aiIngredientsExtra">Ingredientes adicionales en casa</label>
-          <textarea id="aiIngredientsExtra" placeholder="Ej. sal, pimienta, ajo, aceite de oliva, orégano, café, vinagre..."></textarea>
+          <label for="aiIngredientsExtra">Ingredientes y condimentos adicionales</label>
+          <textarea id="aiIngredientsExtra" placeholder="Ej. sal, pimienta, ajo en polvo, orégano, 1 cda de aceite de oliva, café..."></textarea>
           
-          <label for="aiPreferences">Estructura y preferencia de comidas</label>
+          <label for="aiPreferences">Estructura de comidas</label>
           <select id="aiPreferences">
             <option value="3 comidas principales (Desayuno, Almuerzo, Cena)">3 comidas principales (Desayuno, Almuerzo, Cena)</option>
             <option value="4 comidas (Desayuno, Almuerzo, Merienda, Cena)">4 comidas (con merienda proteica)</option>
@@ -764,17 +689,25 @@
             <option value="5">5 Días (Lunes a Viernes / Laboral)</option>
             <option value="7">7 Días (Semana completa)</option>
           </select>
+
+          <details style="margin-top: 14px; color: #888; font-size: 11px;">
+            <summary style="cursor: pointer; color: #ccc;">⚙️ Clave API Gemini (opcional)</summary>
+            <div style="margin-top: 6px;">
+              <input id="customApiKey" type="password" placeholder="Ingresa tu clave si deseas usar la tuya..." style="background:#151518; color:#eee; font-size:11px;" />
+              <small style="display:block; margin-top:3px; color:#777;">Si lo dejas en blanco, se usa la clave preconfigurada o el motor deportivo local.</small>
+            </div>
+          </details>
           
           <button type="button" id="generateAiMenuBtn" class="btn add-food" style="margin-top:18px;">✨ Generar menú con IA</button>
         </section>
         
         <section class="ai-output-panel">
-          <div class="eyebrow"><i></i> Ideas de platos y recetas</div>
+          <div class="eyebrow"><i></i> Ideas de platos, recetas e info nutricional</div>
           <h2>Tu menú <em>personalizado.</em></h2>
-          <p style="font-size:12px;color:#666;margin:0 0 12px;">Preparaciones estructuradas a partir de tus alimentos y tus requerimientos de macronutrientes.</p>
+          <p style="font-size:12px;color:#666;margin:0 0 12px;">Comidas creadas a partir de tu despensa con información nutricional y modo de preparación.</p>
           
           <div id="aiOutput" class="ai-box">
-            <span class="ai-empty">Presiona "Generar menú con IA" para recibir recetas, preparación e ideas de platos según tus ingredientes.</span>
+            <span class="ai-empty">Presiona "Generar menú con IA" para recibir tus recetas estructuradas según tus alimentos registrados.</span>
           </div>
           
           <div class="nav" style="margin-top:auto;padding-top:14px;flex-wrap:wrap;">
@@ -792,7 +725,6 @@
   </div>
   
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <div id="printArea"></div>
 
   <script>
     const C_PARTE_1 = [
@@ -829,15 +761,133 @@
     let toastTimer = null;
     let currentSelectedUnit = 'Gr';
 
+    /* =========================================================
+       MOTOR UNIVERSAL DE DESCARGAS (COMPATIBLE CON SAFARI & MÓVILES)
+       ========================================================= */
     function triggerDownload(blob, filename) {
-      const url = URL.createObjectURL(blob);
+      const safeBlob = new Blob([blob], { type: 'application/octet-stream' });
+      const url = URL.createObjectURL(safeBlob);
       const a = document.createElement('a');
+      a.style.display = 'none';
       a.href = url;
       a.download = filename;
       document.body.appendChild(a);
       a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      setTimeout(() => {
+        if (a.parentNode) a.parentNode.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 1500);
+    }
+
+    /* =========================================================
+       MOTOR DE IMPRESIÓN UNIVERSAL POR IFRAME AISLADO
+       ========================================================= */
+    function printUniversal(htmlContent) {
+      const oldFrame = document.getElementById('printIframe');
+      if (oldFrame) oldFrame.remove();
+
+      const iframe = document.createElement('iframe');
+      iframe.id = 'printIframe';
+      iframe.style.position = 'fixed';
+      iframe.style.right = '0';
+      iframe.style.bottom = '0';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.border = '0';
+      document.body.appendChild(iframe);
+
+      const doc = iframe.contentWindow || iframe.contentDocument;
+      const frameDoc = doc.document ? doc.document : doc;
+
+      const fullHtml = `
+        <!doctype html>
+        <html lang="es">
+        <head>
+          <meta charset="utf-8">
+          <title>Imprimir · Plan Macro</title>
+          <style>
+            @page { size: portrait; margin: 0.8cm; }
+            * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            html, body { 
+              margin: 0; padding: 0; background: #fff !important; color: #000 !important;
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+            }
+            .ticket-wrap { max-width: 680px; margin: 0 auto; padding: 10px; }
+            .ticket-head { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 6px; }
+            .ticket-head h3 { margin: 0; font-size: 13pt; font-weight: 900; color: #000; }
+            .ticket-head span { font-size: 8.5pt; color: #333; }
+            .ticket-red-line { height: 3px; background: #e33333; margin-bottom: 16px; }
+            .ticket-title { font-size: 18pt; font-weight: 900; margin: 0 0 2px 0; color: #000; }
+            .ticket-date { font-size: 8.5pt; color: #444; margin: 0 0 14px 0; }
+            .ticket-box { border: 1.5px solid #000; border-radius: 4px; padding: 12px 14px; margin-bottom: 12px; }
+            .ticket-box h2 { margin: 0 0 4px 0; font-size: 13pt; font-weight: 900; color: #000; }
+            .ticket-box p { margin: 0; font-size: 8.5pt; color: #111; line-height: 1.4; font-weight: 600; }
+            .ticket-label { font-size: 8pt; font-weight: 900; color: #e33333; text-transform: uppercase; margin: 12px 0 4px 0; }
+            .ticket-energy { border: 2px solid #000; border-radius: 4px; padding: 12px 16px; margin-bottom: 12px; }
+            .ticket-energy-val { font-size: 28pt; font-weight: 900; line-height: 1; margin: 0 0 4px 0; }
+            .ticket-energy-sub { font-size: 8.5pt; color: #111; margin: 0; font-weight: 600; }
+            .ticket-macro-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+            .ticket-macro-card { border: 1.5px solid #000; border-top: 4px solid #000; border-radius: 3px; padding: 8px 10px; }
+            .ticket-macro-card.prot { border-top-color: #e33333; }
+            .ticket-macro-title { font-size: 8pt; font-weight: 900; margin: 0; text-transform: uppercase; }
+            .ticket-macro-pct { font-size: 7.5pt; color: #444; margin: 0 0 4px 0; font-weight: 700; }
+            .ticket-macro-grams { font-size: 18pt; font-weight: 900; line-height: 1; margin: 0 0 3px 0; }
+            .ticket-macro-grams.prot-num { color: #e33333; }
+            .ticket-macro-kcal { font-size: 7.5pt; color: #333; margin: 0; font-weight: 600; }
+            .ticket-food-box { border: 1.5px solid #666; border-left: 4px solid #e33333; border-radius: 3px; padding: 10px 12px; margin-bottom: 12px; }
+            .ticket-food-box h4 { margin: 0 0 4px 0; font-size: 9.5pt; font-weight: 900; }
+            .ticket-food-box p { margin: 0; font-size: 8pt; color: #111; line-height: 1.35; }
+            .ticket-footer { border-top: 1px dashed #666; padding-top: 8px; margin-top: 14px; }
+            .ticket-footer b { display: block; color: #000; font-size: 7.5pt; text-transform: uppercase; margin-bottom: 2px; }
+            .ticket-footer p { margin: 0; font-size: 7pt; color: #444; line-height: 1.3; }
+
+            .report-wrap { width: 100%; padding: 10px; }
+            .p-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1.5px solid #000; padding-bottom: 6px; margin-bottom: 12px; }
+            .p-head h1 { margin: 0; font-size: 13pt; font-weight: 800; text-transform: uppercase; }
+            .p-head p { margin: 2px 0 0; font-size: 8pt; color: #333; }
+            .p-section { margin-bottom: 12px; break-inside: avoid; }
+            .p-section h2 { margin: 0 0 5px; font-size: 9pt; font-weight: 800; text-transform: uppercase; border-bottom: 1px solid #777; padding-bottom: 2px; }
+            .p-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 10px; padding: 8px; border: 1px solid #bbb; border-radius: 3px; }
+            .p-item span { display: block; font-size: 7pt; color: #555; text-transform: uppercase; }
+            .p-item b { font-size: 8.5pt; font-weight: 700; }
+            .p-table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 8pt; }
+            .p-table th { border-top: 1px solid #000; border-bottom: 1.5px solid #000; padding: 4px 5px; font-size: 7.5pt; text-align: left; }
+            .p-table td { border-bottom: 1px solid #e0e0e0; padding: 4px 5px; }
+            .p-table td.num, .p-table th.num { text-align: right; }
+            .p-ai-box { border: 1px solid #ccc; padding: 10px; border-radius: 3px; font-size: 8.5pt; line-height: 1.45; }
+            .p-ai-box h3 { margin: 10px 0 3px; font-size: 10pt; color: #e33333; }
+            .p-ai-box h4 { margin: 8px 0 3px; font-size: 9pt; color: #111; }
+            .p-ai-box .meal-nutri-tag { display: inline-block; background: #eee; font-weight: bold; font-size: 7.5pt; padding: 2px 5px; border-radius: 2px; margin-bottom: 4px; }
+            .p-ai-box ul, .p-ai-box ol { margin: 4px 0 8px 16px; padding: 0; }
+            .p-footer { margin-top: 14px; padding-top: 6px; border-top: 1px solid #ccc; display: flex; justify-content: space-between; font-size: 7pt; color: #666; }
+          </style>
+        </head>
+        <body>
+          ${htmlContent}
+        </body>
+        </html>
+      `;
+
+      frameDoc.open();
+      frameDoc.write(fullHtml);
+      frameDoc.close();
+
+      setTimeout(() => {
+        try {
+          iframe.contentWindow.focus();
+          iframe.contentWindow.print();
+        } catch (e) {
+          const win = window.open('', '_blank');
+          if (win) {
+            win.document.write(fullHtml);
+            win.document.close();
+            win.focus();
+            setTimeout(() => win.print(), 350);
+          } else {
+            showToast('Permite ventanas emergentes para imprimir.');
+          }
+        }
+      }, 300);
     }
 
     function estimateBodyFat(sex, age, weight, heightCm) {
@@ -868,6 +918,7 @@
       }
     });
 
+    // FÓRMULA OFICIAL DE MACROS DE ESTE ARCHIVO
     function getRecommendedMacros(bmi, adj, activityLevel) {
       let carbs, protein, fat;
       if (adj < 0) {
@@ -1190,14 +1241,16 @@
       return { data };
     }
 
+    // CÁLCULO EXACTO DE MÜLLER ET AL. CON FACTOR 1.1
     function calculate(data) {
       const fatMass = data.weight * data.bodyFat / 100;
       const leanMass = data.weight - fatMass;
       const basal = 13.587 * leanMass + 9.613 * fatMass + (data.sex === 'male' ? 198 : 0) - 3.351 * data.age + 674;
       const maintenance = basal * data.activity * 1.1;
       const adjusted = maintenance * (1 + data.adjustment / 100);
+      const bmi = data.weight / Math.pow(data.height / 100, 2);
       
-      const macroSplit = data.macroSplit || getRecommendedMacros(data.weight / Math.pow(data.height / 100, 2), data.adjustment, data.activity);
+      const macroSplit = data.macroSplit || getRecommendedMacros(bmi, data.adjustment, data.activity);
       const carbsKcal = adjusted * macroSplit.carbs / 100;
       const proteinKcal = adjusted * macroSplit.protein / 100;
       const fatKcal = adjusted * macroSplit.fat / 100;
@@ -1210,7 +1263,7 @@
         basal,
         maintenance,
         adjusted,
-        bmi: data.weight / Math.pow(data.height / 100, 2),
+        bmi,
         carbsKcal,
         proteinKcal,
         fatKcal,
@@ -1367,7 +1420,7 @@
     }
 
     /* =========================================================
-       PARSER MARKDOWN A HTML LIMPIO
+       PARSER MARKDOWN A HTML LIMPIO CON ESTILO DEPORTIVO
        ========================================================= */
     function formatMarkdown(text) {
       if (!text) return '';
@@ -1377,17 +1430,21 @@
       clean = clean.replace(/^# (.*$)/gim, '<h3>$1</h3>');
       clean = clean.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
       clean = clean.replace(/\*(.*?)\*/gim, '<em>$1</em>');
-      clean = clean.replace(/^\* (.*$)/gim, '<li>$1</li>');
-      clean = clean.replace(/^- (.*$)/gim, '<li>$1</li>');
-      clean = clean.replace(/(<li>.*<\/li>)/gim, '<ul>$1</ul>');
+      clean = clean.replace(/\[NUTRI:\s*(.*?)\]/gim, '<div class="meal-nutri-tag">⚡ $1</div>');
+      clean = clean.replace(/^\d+\.\s+(.*$)/gim, '<li class="recipe-step">$1</li>');
+      clean = clean.replace(/^\*\s+(.*$)/gim, '<li>$1</li>');
+      clean = clean.replace(/^-\s+(.*$)/gim, '<li>$1</li>');
+      clean = clean.replace(/(<li class="recipe-step">[\s\S]*?<\/li>)/gim, '<ol>$1</ol>');
+      clean = clean.replace(/(<li>[\s\S]*?<\/li>)/gim, '<ul>$1</ul>');
       clean = clean.replace(/<\/ul>\s*<ul>/gim, '');
+      clean = clean.replace(/<\/ol>\s*<ol>/gim, '');
       clean = clean.replace(/\n\n/gim, '<br><br>');
       clean = clean.replace(/\n/gim, '<br>');
       return clean;
     }
 
     /* =========================================================
-       GENERADOR DE MENÚ CON INTELIGENCIA ARTIFICIAL
+       ESPECIALISTA EN NUTRICIÓN DEPORTIVA IA (GEMINI + MOTOR LOCAL)
        ========================================================= */
     async function generateAiMenu() {
       if (!plan) {
@@ -1396,41 +1453,67 @@
         return;
       }
 
+      if (!entries.length) {
+        showToast('Debes registrar al menos 2 alimentos en el Paso 4.');
+        goTo(4);
+        return;
+      }
+
       const btn = $('generateAiMenuBtn');
       const box = $('aiOutput');
       const originalText = btn.innerHTML;
       btn.disabled = true;
-      btn.innerHTML = '⏳ Diseñando menú con IA...';
-      box.innerHTML = '<span class="ai-empty">Analizando requerimientos y organizando ingredientes de tus alimentos...</span>';
+      btn.innerHTML = '⏳ Especialista IA diseñando menú y recetas...';
+      box.innerHTML = '<span class="ai-empty">Analizando perfil atlético, desglosando macronutrientes por comida y organizando tus alimentos registrados...</span>';
 
-      const foodItemsList = entries.map(e => {
+      // 1. Extraer con precisión los alimentos seleccionados por el usuario
+      const foodItemsDetailed = entries.map(e => {
         const item = scaled(e.id, e.amount, e.unit);
-        return item ? `${item.name} (${item.amount} ${item.unit})` : null;
-      }).filter(Boolean).join(', ');
+        if (!item) return null;
+        return `- ${item.name}: ${item.amount} ${item.unit || 'Gr'} (Aporte: ${item.kcal} kcal | ${item.protein}g Proteína | ${item.carbs}g Carbos | ${item.fat}g Grasa | ${item.fiber}g Fibra)`;
+      }).filter(Boolean).join('\n');
 
       const extras = $('aiIngredientsExtra').value.trim();
       const pref = $('aiPreferences').value;
       const days = $('aiDays').value;
 
+      // 2. Prompt estricto de Especialista en Nutrición Deportiva
       const promptText = `
-Actúa como un Nutricionista Deportivo y Entrenador de alto nivel para el atleta ${plan.name || 'Cliente'}.
-Tus metas energéticas y objetivos calculados son:
-- Calorías Objetivo: ${Math.round(plan.adjusted)} kcal/día.
-- Proteína diaria: ${Math.round(plan.protein)} g (${plan.macroSplit.protein}%).
-- Carbohidratos diarios: ${Math.round(plan.carbs)} g (${plan.macroSplit.carbs}%).
-- Grasas diarias: ${Math.round(plan.fat)} g (${plan.macroSplit.fat}%).
-- Estructura preferida: ${pref}.
-- Duración solicitada: ${days} día(s).
-- Ingredientes registrados disponibles: ${foodItemsList || 'Alimentos nutritivos comunes y balanceados'}.
-- Ingredientes y condimentos extra en despensa: ${extras || 'Condimentos habituales (sal, pimienta, ajo, especias básicas)'}.
+Eres un Nutricionista Deportivo de Élite y Especialista en Rendimiento Físico.
+Debes diseñar un plan de comidas detallado para tu atleta: "${plan.name || 'Cliente'}".
 
-Diseña un plan de comidas práctico y atractivo organizado día por día y comida por comida con recetas, porciones y preparación simple.
-Usa formato con subtítulos (### Día X, ### Desayuno, ### Almuerzo, etc.), viñetas y pasos breves. 
-Asegúrate de que la distribución cubra los macronutrientes calculados. No incluyas introducción vacía ni relleno, ve directo a los menús y preparaciones.
+DATOS METABÓLICOS Y OBJETIVOS DIARIOS:
+- Calorías Objetivo: ${Math.round(plan.adjusted)} kcal/día
+- Proteínas: ${Math.round(plan.protein)} g (${plan.macroSplit.protein}%)
+- Carbohidratos: ${Math.round(plan.carbs)} g (${plan.macroSplit.carbs}%)
+- Grasas: ${Math.round(plan.fat)} g (${plan.macroSplit.fat}%)
+- Estructura diaria: ${pref}
+- Duración del menú: ${days} día(s)
+
+LISTA OBLIGATORIA DE ALIMENTOS SELECCIONADOS POR EL ATLETA EN SU REGISTRO:
+${foodItemsDetailed}
+
+CONDIMENTOS Y EXTRAS DISPONIBLES EN COCINA:
+${extras || 'Sal marina, pimienta, ajo en polvo, orégano, café, agua, vinagre'}
+
+INSTRUCCIONES CLÍNICAS Y DEPORTIVAS OBLIGATORIAS:
+1. DEBES UTILIZAR COMO BASE PRINCIPAL LOS ALIMENTOS REGISTRADOS ARRIBA. No los ignores ni inventes ingredientes principales ajenos sin usar los suyos.
+2. Reparte los alimentos registrados entre las comidas según el ritmo metabólico (ejemplo: carbos complejos alrededor del entrenamiento, proteínas de alto valor biológico repartidas en cada toma para maximizar la síntesis proteica MPS).
+3. ESTRUCTURA EXACTA PARA CADA COMIDA (Desayuno, Almuerzo, Cena, etc.):
+   - Título de la comida y nombre del plato deportivo (ej: "### Desayuno: Arepas proteicas con revuelto de pollo").
+   - [NUTRI: X kcal | Xg Proteína | Xg Carbos | Xg Grasas]
+   - **Ingredientes y porciones:** lista con las cantidades en gramos/ml de los alimentos registrados que componen este plato.
+   - **Preparación paso a paso:** lista numerada (1., 2., 3...) con instrucciones culinarias rápidas y prácticas para atletas.
+4. Ajusta las porciones para que el total diario se aproxime a las ${Math.round(plan.adjusted)} kcal y a sus macronutrientes.
+5. Sé directo, profesional y enfocado en la nutrición aplicada.
 `;
 
+      const customKey = $('customApiKey')?.value.trim();
+      const apiKeyToUse = customKey || AI_CONFIG.apiKey;
+      if (customKey) localStorage.setItem('user_gemini_api_key', customKey);
+
       try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${AI_CONFIG.model}:generateContent?key=${AI_CONFIG.apiKey}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${AI_CONFIG.model}:generateContent?key=${apiKeyToUse}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -1447,60 +1530,113 @@ Asegúrate de que la distribución cubra los macronutrientes calculados. No incl
 
         if (generated) {
           box.innerHTML = formatMarkdown(generated);
-          showToast('¡Menú generado con éxito!');
+          showToast('¡Menú generado por Especialista IA!');
         } else {
-          throw new Error('Respuesta sin contenido');
+          throw new Error('Respuesta vacía');
         }
       } catch (err) {
-        console.warn('Fallo en API remota, generando menú inteligente adaptado localmente...', err);
-        const fallbackText = generateFallbackMenu(plan, entries, pref, days, extras);
+        console.warn('Fallo de conexión API remota. Activando motor deportivo local con tus alimentos...', err);
+        const fallbackText = generateFallbackSportsMenu(plan, entries, pref, days, extras);
         box.innerHTML = formatMarkdown(fallbackText);
-        showToast('Menú estructurado con éxito.');
+        showToast('Menú estructurado con tus alimentos seleccionados.');
       } finally {
         btn.disabled = false;
         btn.innerHTML = originalText;
       }
     }
 
-    function generateFallbackMenu(p, foodEntries, pref, daysNum, extras) {
-      const foodNames = foodEntries.map(e => {
-        const item = scaled(e.id, e.amount, e.unit);
-        return item ? item.name : '';
-      }).filter(Boolean);
+    // MOTOR DE RESPALDO: Genera comidas reales usando exclusivamente los alimentos registrados
+    function generateFallbackSportsMenu(p, foodEntries, pref, daysNum, extras) {
+      const items = foodEntries.map(e => scaled(e.id, e.amount, e.unit)).filter(Boolean);
+      
+      const proteins = items.filter(i => (i.protein * 4) > (i.carbs * 4) && (i.protein * 4) > (i.fat * 9));
+      const carbs = items.filter(i => (i.carbs * 4) >= (i.protein * 4) && (i.carbs * 4) >= (i.fat * 9));
+      const fatsOrOthers = items.filter(i => !proteins.includes(i) && !carbs.includes(i));
+      
+      const allSelected = items.map(i => `${i.name} (${i.amount} ${i.unit})`).join(', ');
 
-      const itemsStr = foodNames.length ? foodNames.slice(0, 8).join(', ') : 'Pechuga de pollo, Huevos, Arroz blanco, Plátano, Avena y Vegetales';
-      let out = `### Plan Nutricional Personalizado (${daysNum} Día(s))\n`;
-      out += `**Meta Diaria:** ${Math.round(p.adjusted)} kcal | **Proteínas:** ${Math.round(p.protein)}g | **Carbohidratos:** ${Math.round(p.carbs)}g | **Grasas:** ${Math.round(p.fat)}g\n`;
-      out += `**Estructura:** ${pref}\n`;
+      let out = `### Menú Especializado de Nutrición Deportiva\n`;
+      out += `**Atleta:** ${p.name || 'Cliente'} | **Meta Diaria:** ${Math.round(p.adjusted)} kcal\n`;
+      out += `**Proteínas:** ${Math.round(p.protein)}g (${p.macroSplit.protein}%) | **Carbohidratos:** ${Math.round(p.carbs)}g (${p.macroSplit.carbs}%) | **Grasas:** ${Math.round(p.fat)}g (${p.macroSplit.fat}%)\n`;
+      out += `**Alimentos base integrados:** ${allSelected}\n`;
       if (extras) out += `**Condimentos:** ${extras}\n\n`;
 
-      const daysCount = parseInt(daysNum, 10) || 1;
-      for (let d = 1; d <= daysCount; d++) {
-        out += `### Día ${d}\n`;
-        out += `**Desayuno:**\n`;
-        out += `- Arepa o avena con huevos revueltos y un toque de aguacate.\n`;
-        out += `- *Preparación:* Cocinar a fuego medio, sazonar con sal y orégano.\n\n`;
+      const numDays = parseInt(daysNum, 10) || 1;
+      const numMeals = pref.includes('4') ? 4 : (pref.includes('5') ? 5 : 3);
 
-        out += `**Almuerzo:**\n`;
-        out += `- Porción principal de proteína (${foodNames[0] || 'Pollo o Carne'}), arroz o tubérculo y vegetales salteados.\n`;
-        out += `- *Preparación:* Dorar a la plancha con condimentos y acompañar con ensalada fresca.\n\n`;
+      for (let d = 1; d <= numDays; d++) {
+        out += `### Día ${d} · Plan de Rendimiento\n\n`;
 
-        if (pref.includes('4') || pref.includes('5')) {
-          out += `**Merienda Proteica:**\n`;
-          out += `- Batido o claras con fruta fresca o puñado de frutos secos.\n\n`;
+        // 1. DESAYUNO
+        const bCarb = carbs[0] || { name: 'Avena u Hojuelas', amount: 50, unit: 'Gr', kcal: 180, protein: 6, carbs: 32, fat: 3 };
+        const bProt = proteins[0] || { name: 'Huevos enteros', amount: 120, unit: 'Gr', kcal: 180, protein: 15, carbs: 1, fat: 12 };
+        const bKcal = Math.round((bCarb.kcal || 180) + (bProt.kcal || 180));
+        const bP = Math.round((bCarb.protein || 6) + (bProt.protein || 15));
+        const bC = Math.round((bCarb.carbs || 32) + (bProt.carbs || 1));
+        const bF = Math.round((bCarb.fat || 3) + (bProt.fat || 12));
+
+        out += `#### Desayuno: Activación Metabólica (${bProt.name} & ${bCarb.name})\n`;
+        out += `[NUTRI: ${bKcal} kcal | ${bP}g Proteína | ${bC}g Carbos | ${bF}g Grasas]\n`;
+        out += `- **Ingredientes:** ${bProt.amount} ${bProt.unit} de ${bProt.name}, ${bCarb.amount} ${bCarb.unit} de ${bCarb.name}.\n`;
+        out += `1. Cocinar ${bProt.name} a fuego medio utilizando condimentos al gusto (${extras || 'sal marina y orégano'}).\n`;
+        out += `2. Preparar ${bCarb.name} al vapor o a la plancha como acompañamiento energético principal.\n`;
+        out += `3. Servir caliente junto con una taza de infusión o café sin azúcar.\n\n`;
+
+        // 2. ALMUERZO
+        const lProt = proteins[1] || proteins[0] || { name: 'Pechuga de pollo', amount: 150, unit: 'Gr', kcal: 220, protein: 35, carbs: 0, fat: 4 };
+        const lCarb = carbs[1] || carbs[0] || { name: 'Arroz blanco o Batata', amount: 150, unit: 'Gr', kcal: 200, protein: 4, carbs: 45, fat: 1 };
+        const lExtra = fatsOrOthers[0] || { name: 'Vegetales / Aguacate', amount: 80, unit: 'Gr', kcal: 70, protein: 2, carbs: 4, fat: 5 };
+        const lKcal = Math.round(lProt.kcal + lCarb.kcal + (lExtra.kcal || 70));
+        const lP = Math.round(lProt.protein + lCarb.protein + (lExtra.protein || 2));
+        const lC = Math.round(lCarb.carbs + (lProt.carbs || 0) + (lExtra.carbs || 4));
+        const lF = Math.round(lProt.fat + lCarb.fat + (lExtra.fat || 5));
+
+        out += `#### Almuerzo: Plato Anabólico de Recuperación (${lProt.name} con ${lCarb.name})\n`;
+        out += `[NUTRI: ${lKcal} kcal | ${lP}g Proteína | ${lC}g Carbos | ${lF}g Grasas]\n`;
+        out += `- **Ingredientes:** ${lProt.amount} ${lProt.unit} de ${lProt.name}, ${lCarb.amount} ${lCarb.unit} de ${lCarb.name}, ${lExtra.amount || 80} ${lExtra.unit || 'Gr'} de ${lExtra.name}.\n`;
+        out += `1. Porcionar ${lProt.name} y marinar con ajo, pimienta y sal marina.\n`;
+        out += `2. Cocinar a la plancha a fuego vivo durante 4 a 6 minutos por lado para conservar jugosidad.\n`;
+        out += `3. Acompañar con ${lCarb.name} cocido y agregar ${lExtra.name} como aporte de micronutrientes y ácidos grasos.\n\n`;
+
+        // 3. MERIENDA (Si aplica)
+        if (numMeals >= 4) {
+          const sProt = proteins[2] || proteins[0] || { name: 'Queso magro o Huevo', amount: 80, unit: 'Gr', kcal: 120, protein: 14, carbs: 2, fat: 6 };
+          const sKcal = Math.round(sProt.kcal);
+          out += `#### Merienda: Snack Proteico de Mitad de Tarde\n`;
+          out += `[NUTRI: ${sKcal} kcal | ${Math.round(sProt.protein)}g Proteína | ${Math.round(sProt.carbs || 2)}g Carbos | ${Math.round(sProt.fat || 5)}g Grasas]\n`;
+          out += `- **Ingredientes:** ${sProt.amount} ${sProt.unit} de ${sProt.name}.\n`;
+          out += `1. Consumir de forma práctica 2 a 3 horas antes del entrenamiento o como puente hacia la cena.\n`;
+          out += `2. Mantener hidratación óptima con 400-500 ml de agua fresca.\n\n`;
         }
 
-        out += `**Cena:**\n`;
-        out += `- Opciones ligeras basadas en ${foodNames[1] || 'pescado, pollo o queso magro'} con ensalada o vegetales al vapor.\n`;
-        out += `- *Preparación:* Cocción rápida en 15 minutos para favorecer el descanso nocturno.\n\n`;
+        // 4. CENA
+        const dProt = proteins[proteins.length - 1] || { name: 'Pescado o Pollo magro', amount: 140, unit: 'Gr', kcal: 180, protein: 30, carbs: 0, fat: 3 };
+        const dCarb = carbs[carbs.length - 1] || { name: 'Vegetales mixtos', amount: 120, unit: 'Gr', kcal: 60, protein: 3, carbs: 10, fat: 1 };
+        const dKcal = Math.round(dProt.kcal + dCarb.kcal);
+        const dP = Math.round(dProt.protein + dCarb.protein);
+        const dC = Math.round((dProt.carbs || 0) + dCarb.carbs);
+        const dF = Math.round(dProt.fat + dCarb.fat);
+
+        out += `#### Cena: Reparación Nocturna Ligera (${dProt.name})\n`;
+        out += `[NUTRI: ${dKcal} kcal | ${dP}g Proteína | ${dC}g Carbos | ${dF}g Grasas]\n`;
+        out += `- **Ingredientes:** ${dProt.amount} ${dProt.unit} de ${dProt.name}, ${dCarb.amount} ${dCarb.unit} de ${dCarb.name}.\n`;
+        out += `1. Sellar ${dProt.name} con especias digestivas (orégano, perejil, limón).\n`;
+        out += `2. Saltear o cocinar al vapor ${dCarb.name} por 5 minutos sin exceso de aceites añadidos.\n`;
+        out += `3. Consumir al menos 90 minutos antes de dormir para favorecer un descanso profundo y pico de hormona de crecimiento.\n\n`;
       }
+
       return out;
     }
 
     $('generateAiMenuBtn').addEventListener('click', generateAiMenu);
 
+    const savedApiKey = localStorage.getItem('user_gemini_api_key');
+    if (savedApiKey && $('customApiKey')) {
+      $('customApiKey').value = savedApiKey;
+    }
+
     /* =========================================================
-       BOTÓN: PDF RÁPIDO (TICKET PASO 3)
+       BOTÓN: PDF RÁPIDO (TICKET PASO 3) CON PRINT UNIVERSAL
        ========================================================= */
     $('downloadPdf').addEventListener('click', () => {
       if (!plan) return;
@@ -1587,12 +1723,11 @@ Asegúrate de que la distribución cubra los macronutrientes calculados. No incl
       </div>
       `;
 
-      $('printArea').innerHTML = printHtml;
-      window.print();
+      printUniversal(printHtml);
     });
 
     /* =========================================================
-       BOTÓN: REPORTE COMPLETO A4 + MENÚ IA (PASO 6)
+       BOTÓN: REPORTE COMPLETO A4 + MENÚ IA (PASO 6) CON PRINT UNIVERSAL
        ========================================================= */
     $('printFullReportPdfBtn').addEventListener('click', () => {
       if (!plan) {
@@ -1699,8 +1834,7 @@ Asegúrate de que la distribución cubra los macronutrientes calculados. No incl
       </div>
       `;
 
-      $('printArea').innerHTML = printHtml;
-      window.print();
+      printUniversal(printHtml);
     });
 
     document.querySelectorAll('[data-back]').forEach(btn => {
